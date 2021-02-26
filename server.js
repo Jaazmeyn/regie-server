@@ -25,7 +25,7 @@ app.use( bodyParser.json() );//um get body zu encoden
 
 //default abfangen .. muss in den anderen ordner kommen
 //express.static(__dirname[])
-app.use( express.static('../regie-client/view'));
+app.use( express.static('static'));
 
 /**
  * crewmember  -- endpoint '/crew'
