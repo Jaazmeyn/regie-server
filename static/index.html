@@ -16,62 +16,85 @@
             <h2>Register as Crew Member in the Filmproject "project title" <em></em></h2>
             <form class="row g-3 needs-validation" novalidate>
                 <div class="col-md-4">
-                <label for="validationCustom01" class="form-label">First name</label>
-                <input value="Lisa" type="text" class="form-control cmVName" id="validationCustom01" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-                </div>
-                <div class="col-md-4">
-                <label for="validationCustom02" class="form-label ">Last name</label>
-                <input value="isa" type="text" class="form-control cmNName" id="validationCustom02" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-                </div>
-                <div class="col-md-4">
-                <label for="validationCustomUsername" class="form-label ">Mail</label>
-                <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend">@</span>
-                    <input value="email@lisa" type="text" class="form-control cmMail" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
-                    <div class="invalid-feedback">
-                    Please type in your email Adress.
+                    <label for="validationCustom01" class="form-label">First name</label>
+                    <input value="Lisa" type="text" class="form-control cmVName" id="validationCustom01" required>
+                    <div class="valid-feedback">
+                        Looks good!
                     </div>
-                </div>
-                </div>
-                <div class="col-md-4">
-                <label for="validationCustom03" class="form-label">Password</label>
-                <input value="12345" type="password" class="form-control cmPassword" id="validationCustom03" required>
-                <div class="invalid-feedback">
-                    Please provide a valid password.
-                </div>
-                </div>
-                <div class="col-md-4">
-                    <label for="validationCustom03" class="form-label">Number</label>
-                    <input value="12345" type="number" class="form-control cmNumber" id="validationCustom03" required>
-                    <div class="invalid-feedback">
-                    Please provide a valid number.
                     </div>
-                </div>
+                    <div class="col-md-4">
+                    <label for="validationCustom02" class="form-label ">Last name</label>
+                    <input value="isa" type="text" class="form-control cmNName" id="validationCustom02" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    </div>
+                    <div class="col-md-4">
+                    <label for="validationCustomUsername" class="form-label ">Mail</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        <input value="email@lisa" type="text" class="form-control cmMail" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+                        <div class="invalid-feedback">
+                        Please type in your email Adress.
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-4">
+                    <label for="validationCustom03" class="form-label">Password</label>
+                    <input value="12345" type="password" class="form-control cmPassword" id="validationCustom03" required>
+                    <div class="invalid-feedback">
+                        Please provide a valid password.
+                    </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="validationCustom03" class="form-label">Number</label>
+                        <input value="12345" type="number" class="form-control cmNumber" id="validationCustom03" required>
+                        <div class="invalid-feedback">
+                        Please provide a valid number.
+                        </div>
+                    </div>
 
-                <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                    <label class="form-check-label" for="invalidCheck">
-                    Agree to terms and conditions
-                    </label>
-                    <div class="invalid-feedback">
-                    You must agree before submitting.
+                    <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <label class="form-check-label" for="invalidCheck">
+                        Agree to terms and conditions
+                        </label>
+                        <div class="invalid-feedback">
+                        You must agree before submitting.
+                        </div>
                     </div>
                 </div>
-                </div>
                 <div class="col-12">
-                <button class="btn btn-primary " id="registerbtn" type="submit">Register</button>
+                    <button class="btn btn-primary " id="registerbtn" type="submit">Register</button>
                 </div>
             </form>
         </div>
 
-        
+        <div class="loginform">
+            <h1 id="username">Login</h1><div id="crewlogin">
+                <form class="row g-3 needs-validation" novalidate>
+                    <div class="col-md-4">
+                        <label for="validationCustom04" class="form-label ">Name</label>
+                        <input value="" type="text" class="form-control cmNName" id="validationCustom04" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                    </div>
+                    <div class="col-md-4">
+                        <label for="validationCustom05" class="form-label">Password</label>
+                        <input value="12345" type="password" class="form-control cmPassword" id="loginpassword validationCustom05" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid password.
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-12">
+                        <button class="btn btn-primary " id="loginbtn" type="button">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 
      

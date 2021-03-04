@@ -30,14 +30,21 @@ app.get('/regie', function (req, res) {
   });
 
 //main.js (ajax) sendet user im body mit
-app.post('/crew', (req, res) => {//wenn user form absendet bekomme request an diese url
-    let newCrewMember = req.body;
-    console.log('postrequest kommt an', req,'req');
+app.post('/crewregister', (req, res) => {//wenn user form absendet bekomme request an diese url
+    let newCrewMember = {
+        vorname: req.body.vorname,
+        nachname: req.body.nachname,
+        email : req.body.email, 
+        password: req.body.password,
+        number : req.body.number,
+        id : req.body.id,
+        status : req.body.login
+    }
+    console.log('postrequest kommt an','req');
 
     fs.readFile(CrewFile, (err, data) => { //JSON lesen -> eingetragene user auslesen
         if(!err){
             data = JSON.parse(data), 
-            //console.log('data',data),
             //crewmember in Array als objekt fügen
             data.crewMembers.push(newCrewMember); //crewmembers im json 
 
@@ -62,23 +69,29 @@ app.post('/crew', (req, res) => {//wenn user form absendet bekomme request an di
  * datenbank nach crew members abfragen
  */
 
-app.get('/crew', (req, res) => {
-     console.log('anfrage GET kommt an')
+app.post('/crewlogin', (req, res) => {
+     console.log( 'anfrage GET kommt an')
+     loginname = req.body.vorname,
+     loginpw = req.body.password
+     console.log(loginname, loginpw)
 
-    fs.readFile(CrewFile, (err, data) => { 
-          if(!err){
-                 data = JSON.parse(data)
-                 console.log(data, 'logindata')
-          }
-            else {
-                console.log('datenabfrage fehlgeschlagen')
-            }
-            
-            fs.writeFile(CrewFile, JSON.stringify(data), (err) => {
-                req.status(200)
-                    .set({'Content-Type':'application/json'})
-                    .end(JSON.stringify({status:'success'}));
-            })
+    fs.readFile(CrewFile, (err, memberdata) => { 
+        if(!err){
+            memberdata = JSON.parse(memberdata), 
+            console.log(memberdata.crewMembers[0][0])
+            memberdata.crewMembers.map(one => console.log(one.pw, 'onnnneeeeeeee passsswwwoooooord'))
+            console.log(loginpw , 'loginpw')
+            // memberdata.crewMembers.map(onemember(()=>{
+            //     console.log(loginpw)
+            // }))
+            // memberdata = JSON.parse(memberdata), 
+            // console.log(memberdata)
+             // password = data.login.password,
+
+
+        } else { // error bei file lesen
+            console.log('eintragung fehlgeschlagen!')
+        }        
     }) //end readfile
 })//end get
 

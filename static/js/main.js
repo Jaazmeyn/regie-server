@@ -3,6 +3,7 @@
 'use strict'
 // all the forms for validation styles
 var forms = $('.needs-validation')
+$( '.loginform').hide();
 
 // Loop over them and prevent submission (Bootstrap basic validation)
 Array.prototype.slice.call(forms).forEach(function (form) {
@@ -13,68 +14,31 @@ Array.prototype.slice.call(forms).forEach(function (form) {
             e.stopPropagation()
         }
         form.classList.add('was-validated');            
-        console.log(form);
         $( '#submit button' ).prop( 'disabled', true );
         
 
         $('#registerbtn').on('click', function(e){
             e.preventDefault();
+            // let Api = $.getJSON("http://jsonip.appspot.com?callback=?" = () => data.ip);
             let newTeamMember = {
                 vorname:$('.cmVName').val(), 
                 nachname:$('.cmNName').val(), 
                 email:$('.cmMail').val(),
                 password:$('.cmPassword').val(),
                 number:$('.cmNumber').val(),
-                login: false
+                id: Math.random().toString(),
+                login: false,
             }
             $.ajax({ //schicke ausgelesene daten an Server
-                url: '/crew',
+                url: '/crewregister',
                 method: 'post',
                 data: JSON.stringify(newTeamMember),
                 contentType:'application/json',
                 success:( res ) => {
                     if(res.status == 'success'){
-                        let login = `<div class="container"><h1>Login</h1><div id="crewlogin">
-                        <form class="row g-3 needs-validation" novalidate>
-                            <div class="col-md-4">
-                                <label for="validationCustom03" class="form-label">Password</label>
-                                <input value="12345" type="password" class="form-control cmPassword" id="validationCustom03" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid password.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                            <label for="validationCustom02" class="form-label ">Last name</label>
-                            <input value="isa" type="text" class="form-control cmNName" id="validationCustom02" required>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div><br>
-                            <div class="col-12">
-                                <button class="btn btn-primary " id="loginbtn" type="button">Login</button>
-                            </div>
-                        </form>
-                    </div></div>`;
-                    $('body').append('<div>').html(login);   
-                    $('#loginbtn').on('click', function(e){
-                        e.preventDefault(); 
-                        console.log('loginclick')
-        
-                        $.ajax({ //schicke ausgelesene daten an Server
-                            url: '/crew',
-                            data: JSON.stringify(res),
-                            method: 'get',
-                            contentType:'application/json',
-                            success:( req ) =>{
-                                console.log(res, 'this isssssss -- response!!!!!!!!')
-                                if(res.status == 'success'){
-                                    console.log('!!!!success')
-                                    res.indexOf( newTeamMember )
-                                    //weiterleitung in newsberreich
-                                }
-                            }
-                        })//ajax
-                    })//onclick login
-                    
+                        $( '.loginform').show();
+                        $( '#crewregistration').hide();
+                        $( '#username').html(`Hello ${$('.cmVName').val()}  <br>please Login here <br>`);
                     } else {
                         console.log(' success', res, newTeamMember)
                     }
@@ -86,17 +50,32 @@ Array.prototype.slice.call(forms).forEach(function (form) {
         })//end register
 
 
-        
-        
-        
-
-
-
-
-
     }, false)//gegen bubbling
 })
 
+$('#loginbtn').on('click', function(e){
+    e.preventDefault(); 
+    console.log('loginclick')
+    let login = {
+        password:$('.cmPassword').val(),
+        vorname:$('.cmVName').val(),
+    }
+
+    $.ajax({ //schicke ausgelesene daten an Server
+        url: '/crewlogin',
+        method: 'post',
+        data: JSON.stringify(login),
+        contentType:'application/json',
+        success:( req ) =>{
+            console.log(req, 'this isssssss -- response!!!!!!!!')
+            // if(req.status == 'success'){
+            //     console.log('!!!!success')
+            //     req.indexOf( newTeamMember )
+            //     //weiterleitung in newsberreich
+            // }
+        }
+    })//ajax
+})//onclick login
 
 {/* <table class="table caption-top">
             <caption>List of main crewmembers(all day)</caption>
