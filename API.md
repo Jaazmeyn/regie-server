@@ -15,6 +15,7 @@ data: {
     email:email,
     password:password,
     number:number,
+    
 }
 ### Response
     message: 'string' 

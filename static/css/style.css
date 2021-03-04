@@ -1,0 +1,17 @@
+html{
+    padding: 0;
+}
+main{
+    width: 50%;
+    margin:  0 auto;
+    background-color: rgb(208, 250, 140);
+    padding: 10px;
+}
+.footer{
+    background-color: black;
+    color: white;
+}
+
+.emtybox{
+    display: none;
+}
