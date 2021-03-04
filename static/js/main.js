@@ -57,23 +57,23 @@ $('#loginbtn').on('click', function(e){
     e.preventDefault(); 
     console.log('loginclick')
     let login = {
-        password:$('.cmPassword').val(),
-        vorname:$('.cmVName').val(),
+        vorname:$('.loginname').val(),
+        password:$('.loginPasswort').val(),
     }
-
     $.ajax({ //schicke ausgelesene daten an Server
         url: '/crewlogin',
         method: 'post',
         data: JSON.stringify(login),
         contentType:'application/json',
-        success:( req ) =>{
-            console.log(req, 'this isssssss -- response!!!!!!!!')
-            // if(req.status == 'success'){
-            //     console.log('!!!!success')
+        success:( res ) =>{
+            console.log('logged in')
+            if(res.status == 'success'){
+                console.log('!!!!success')
             //     req.indexOf( newTeamMember )
-            //     //weiterleitung in newsberreich
-            // }
-        }
+                 //weiterleitung in newsberreich
+             }
+        },
+        error:() => {console.log('error')}
     })//ajax
 })//onclick login
 
