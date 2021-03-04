@@ -25,9 +25,9 @@ app.use( express.static('static'));
  */    
 const CrewFile = 'model/data/crew.json';
 
-app.get('/regie', function (req, res) {
-    res.send('static/regie.html');
-  });
+// app.get('/regie', function (req, res) {
+//     res.send('static/regie.html');
+//   });
 
 //main.js (ajax) sendet user im body mit
 app.post('/crewregister', (req, res) => {//wenn user form absendet bekomme request an diese url
@@ -61,16 +61,13 @@ app.post('/crewregister', (req, res) => {//wenn user form absendet bekomme reque
 })//end post crew registrierung
 
 
-/** LOGIN -> html muss noch gemacht werden
- * 
+/** LOGIN  
  * crewmember Anmeldung
  * abchecken ob user und passwort in json vorhanden sind
- *
- * datenbank nach crew members abfragen
- */
+ * */
 
 app.post('/crewlogin', (req, res) => {
-     console.log( 'anfrage GET kommt an')
+     console.log( 'anfrage post kommt an')
      loginname = req.body.vorname,
      loginpw = req.body.password
      console.log(loginname, loginpw)
@@ -78,9 +75,22 @@ app.post('/crewlogin', (req, res) => {
     fs.readFile(CrewFile, (err, memberdata) => { 
         if(!err){
             memberdata = JSON.parse(memberdata), 
-            console.log(memberdata.crewMembers[0][0])
-            memberdata.crewMembers.map(one => console.log(one.pw, 'onnnneeeeeeee passsswwwoooooord'))
-            console.log(loginpw , 'loginpw')
+            // console.log(memberdata.crewMembers[0], 'erster')
+            usernames = [];
+            memberdata.crewMembers.map(one => {
+                usernames = [];
+                usernames.push(one.vorname)
+                // console.log(one.vorname, 'all names')
+                // console.log(loginname , ' = loginname')
+                if(loginname === one.vorname && loginpw === one.password){
+                    console.log('existing user');
+                }else{
+                    console.log('not existing user');
+                }
+
+            })
+            console.log(usernames)
+
             // memberdata.crewMembers.map(onemember(()=>{
             //     console.log(loginpw)
             // }))
@@ -91,7 +101,9 @@ app.post('/crewlogin', (req, res) => {
 
         } else { // error bei file lesen
             console.log('eintragung fehlgeschlagen!')
-        }        
+        }   
+        res.status(200)
+                .end(JSON.stringify({status:'success'}));     
     }) //end readfile
 })//end get
 
