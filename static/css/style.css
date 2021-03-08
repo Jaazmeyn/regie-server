@@ -1,10 +1,14 @@
 html{
     padding: 0;
 }
-main{
+body{
+    background-image: url("../img/universal-studios.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
+main {
     width: 50%;
     margin:  0 auto;
-    background-color: rgb(208, 250, 140);
+    background-color: rgba(255,255,255,0.7);
     padding: 10px;
 }
 .footer{
@@ -17,9 +21,62 @@ main{
 }
 
 h2{
-    background: violet;
-    height: 300px;
+    background: rgb(51, 135, 254);
+    color: whitesmoke;
+    height: 170px;
     text-align: center;
-    padding-top: 130px;
+    padding-top: 80px;
     margin-bottom: 50px;
+}
+table{
+    background-color: white;
+}
+.container{
+    position: relative;
+    padding: 60px;
+}
+.profilbild{
+    border-radius: 60%;
+    width: 200px;
+    position: absolute;
+    top: 1px;    
+    text-align: center;
+    z-index: 1;
+}
+
+.fixed{
+    position: fixed;
+    z-index: 2;
+    left: 0;
+}
+.top{
+    top:0
+}
+.left{
+    top:40px
+}
+
+#newsfeed{
+    border:2px black solid;
+    border-radius: 1%;
+}
+#newsfeed > * {
+    margin: 20px;
+}
+.currentprojimg{
+    width: 80%;
+}
+
+.tab-content > .active{
+    position: relative;
+}
+.logoutpage {
+    background-color: black!important;
+}
+@media only screen and (max-width: 600px) {
+
+    .responsive{
+        display: flex;
+        width: 100%;
+    }
 }

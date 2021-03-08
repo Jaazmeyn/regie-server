@@ -4,7 +4,6 @@
 // all the forms for validation styles
 var forms = $('.needs-validation')
 $( '.loginform').hide();
-
 // Loop over them and prevent submission (Bootstrap basic validation)
 Array.prototype.slice.call(forms).forEach(function (form) {
     form.addEventListener('submit', function (e) {
@@ -16,9 +15,13 @@ Array.prototype.slice.call(forms).forEach(function (form) {
         form.classList.add('was-validated');            
         $( '#submit button' ).prop( 'disabled', true );
         
-
+/*
+REGISTRIERUNG
+**/
         $('#registerbtn').on('click', function(e){
             e.preventDefault();
+            console.log('registerclick')
+
             // let Api = $.getJSON("http://jsonip.appspot.com?callback=?" = () => data.ip);
             let newTeamMember = {
                 vorname:$('.cmVName').val(), 
@@ -30,85 +33,59 @@ Array.prototype.slice.call(forms).forEach(function (form) {
                 login: false,
             }
             $.ajax({ //schicke ausgelesene daten an Server
-                url: '/crewregister',
-                method: 'post',
+                url: '/crew',
+                method: 'post', 
                 data: JSON.stringify(newTeamMember),
                 contentType:'application/json',
-                success:( res ) => {
-                    if(res.status == 'success'){
+                success:( req, res ) => {
+                    console.log('user wurde hinzugefügt')
+                    // if(res.status == 200){
                         $( '.loginform').show();
                         $( '#crewregistration').hide();
                         $( '#username').html(`Hello ${$('.cmVName').val()}  <br>please Login here <br>`);
-                    } else {
-                        console.log(' success', res, newTeamMember)
-                    }
+                        console.log(req, 'in den loginberreich');
+                        // registrierte user zu regie userinterface
+                        let html;
+                        const prot = res.forEach( einzelner => html = `<th>${einzelner}</th>`)
+                        $('<tr>').html(prot).appendTo('html')
+                    // } else {
+                    //     console.log(' js-success', res, newTeamMember)
+                    // }
                 },
                 error:() => {
                     console.log('XHR ERROR')
                 }
             })//end AJAX
         })//end register
+  
 
+        /**
+         * LOGIN
+         */
+        $('#loginbtn').on('click', function(e){
+            e.preventDefault(); 
+            console.log('loginclick')
+            let login = {
+                vorname:$('.loginname').val(),
+                password:$('.loginPasswort').val(),
+            }
+            $.ajax({ //schicke ausgelesene daten an Server
+                url: '/crew',
+                method: 'get',
+                data: JSON.stringify(login),
+                contentType:'application/json',
+                success:( res ) => {
+                    console.log('checkmal ob vorhanden')
+                    if(res.status == 'success'){
+                        
+                        console.log(login.vorname ,'logged in')
+                    //     req.indexOf( newTeamMember )
+                        //weiterleitung in newsberreich
+                    }
+                },
+                error:() => {console.log('error')}
+            })//ajax
+        })//onclick login
 
     }, false)//gegen bubbling
 })
-
-$('#loginbtn').on('click', function(e){
-    e.preventDefault(); 
-    console.log('loginclick')
-    let login = {
-        vorname:$('.loginname').val(),
-        password:$('.loginPasswort').val(),
-    }
-    $.ajax({ //schicke ausgelesene daten an Server
-        url: '/crewlogin',
-        method: 'post',
-        data: JSON.stringify(login),
-        contentType:'application/json',
-        success:( res ) =>{
-            console.log('logged in')
-            if(res.status == 'success'){
-                console.log('!!!!success')
-            //     req.indexOf( newTeamMember )
-                 //weiterleitung in newsberreich
-             }
-        },
-        error:() => {console.log('error')}
-    })//ajax
-})//onclick login
-
-{/* <table class="table caption-top">
-            <caption>List of main crewmembers(all day)</caption>
-            <thead>
-              <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Email Adress</th>
-                <th scope="col">Phone number</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>DOP</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>TALENT</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>CUT</td>
-              </tr>
-
-            </tbody>
-          </table> */}

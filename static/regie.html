@@ -5,24 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">   
+    <link rel="stylesheet" href="./css/style.css">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    <script src="./js/regie.js"></script>
 </head>
 <body>
+  <main class="container">
 <!-- Nav tabs -->
-<ul class="nav nav-tabs" id="myTab" role="tablist">
+<ul class="nav nav-tabs fixed top" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+      <i class="fa fa-home"></i> Home</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+      <i class="fa fa-user"></i> Profile</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
+    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">
+      <i class="fa fa-share-alt"></i> Invite & share Proj</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" hdata-bs-targetref="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
+    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" hdata-bs-targetref="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">
+      <i class="fa fa-power-off"></i> Log out </button>
   </li>
 </ul>
 
@@ -31,34 +41,95 @@
   <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
     
     <div class="d-flex align-items-start">
-      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">actual crew</button>
-        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">alle kontakte</buttona>
-        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+      <div class="nav flex-column nav-pills me-3 fixed left responsive" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
+        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fa fa-tasks"></i> Current Project</button>
+        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fa fa-users"></i> Contacts</buttona>
+        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fa fa-newspaper-o"></i> Dashboard</button>
+        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fa fa-comment-o"></i> Direct</button>
       </div>
-      <div class="tab-content" id="v-pills-tabContent">
+      <div class="tab-content container" id="v-pills-tabContent"><!--First tab in first tab -->
         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+          
+          <h2><i class="fa fa-tasks"></i> current Project</h2>
+          <h3>no projects jet</h3>
+          <!-- new Project -->
+          <h5>create one</h5>
+          
+          <!-- Button trigger modal -->
+          <!-- Large modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Create Project</button>
+          <div class="modal fade bd-example-modal-lg" id="newProjModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content container">
 
-          <div id="TeamMembers">
+                  <h3>Your new Project</h3>      
+                  <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-lg ">Project Title</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Large" id="newProjectTitle" aria-describedby="inputGroup-sizing-sm">
+                  </div>
+                <br><br>
+
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Synopsis</span>
+                  </div>
+                  <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary " id="saveProject">Save changes</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+
+  <br><br><br><br><hr>
+  <div id="AddupdateArea">
+          <em>if added or choosen old project</em>
+          <div class="disabledarea disabled" >
+            <textarea name="notizen" id="text" cols="30" rows="10" class="md-textarea form-control">type any message</textarea>
+            <br>
+            <button class="btn btn-secondary">
+              <i class="fa fa-cloud-download"></i>
+              Import Files</button>
+            <br><br>
+
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Save for me as info</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+              <label class="form-check-label" for="flexSwitchCheckChecked">save for all in newsfeed</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDisabled" disabled>
+              <label class="form-check-label" for="flexSwitchCheckDisabled">send as message(premium)</label>
+            </div>
+            <br>
+          <button class="btn btn-primary">Save</button>
+      </div>
             
           </div>
-          
-          
-
-
         </div>
+
+
         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-          <table class="table caption-top">
+          <h2>contacts<i class="fa fa-user"></i></h2>
+          <table class="table caption-striped " id="crewmemberlist">
             <caption>List of main crewmembers(all day)</caption>
             <thead>
-              <tr>
+              <tr class="bg-light">
                 <th scope="col"></th>
                 <th scope="col">First</th>
                 <th scope="col">Last</th>
                 <th scope="col">email</th>
                 <th scope="col">profi</th>
-
               </tr>
             </thead>
             <tbody>
@@ -70,13 +141,13 @@
                 <td>DOP</td>
 
               </tr>
-              <tr>
+              <span id="memberoverview"></span>
+              <tr >
                 <th scope="row">2</th>
                 <td>Jacob</td>
                 <td>Thornton</td>
                 <td>@fat</td>
                 <td>TALENT</td>
-
               </tr>
               <tr>
                 <th scope="row">3</th>
@@ -91,7 +162,6 @@
                 <td>Otto</td>
                 <td>@mdo</td>
                 <td>DOP</td>
-
               </tr>
               <tr>
                 <th scope="row">2</th>
@@ -99,7 +169,6 @@
                 <td>Thornton</td>
                 <td>@fat</td>
                 <td>TALENT</td>
-
               </tr>
               <tr>
                 <th scope="row">3</th>
@@ -133,22 +202,66 @@
 
             </tbody>
           </table>
+
+          <h2 title="click on contacts and choose for message all">messages</h2>
+
+
         </div>
-        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
+
+        <!-- dashboard -->
+        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+          <h2><i class="fa fa-newspaper-o"></i> Dashboard</h2>
+          <div id="newsfeed">
+              <h3>made the Banner IMG</h3>
+              <img src="./img/current-project.jpeg" class="currentprojimg" alt="">
+              <p class="titelbeschriebung"> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+            </div>
+        </div>
         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
       </div>
     </div>
     
   </div>
   <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    Actual Project
+    <img src="./img/profilbild.png" alt="" class="profilbild">
+    <div class="container">
+      <h2>Hello Director!</h2>
+      <button class="btn btn-secondary">add profilefoto</button><img src="" alt="img">
+      <p id="regiename">your Name</p>
+      <h4>your projects</h4>
+      <div class="allproj"></div>
+      <ul>
+        <li>Dark Dog</li>
+        <li>The Family</li>
+        <li>Sunken ship</li>
+      </ul>
+      <button class="btn btn-secondary" title="if you make current the homefeed will change">make current</button>
+
+
+      <p>current project</p>
+    </div>
+
+
   </div>
-  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+    <div class="example-container" >
+      <div class="example-row">
+        <div class="example-content-main">Main content</div>
+        <div class="example-content-secondary">Secondary content</div>
+        <button class="btn btn-primary"><a href="./index.html">login</a>
+        </button>
+      <button class="btn btn-primary">register</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab" class="logoutpage">
+
+
+  </div>
 </div>
+</main>
 
 <script>
-  table.map()
 </script>
 </body>
 </html>
