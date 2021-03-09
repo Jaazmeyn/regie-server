@@ -18,7 +18,7 @@ const crew = [];
 const CrewFile = './model/data/crew.json';
 
 //main.js (ajax) sendet user im body mit
-router.post('/', (req, res) => {//vom frontend to server gesendet
+router.post('/register', (req, res) => {//vom frontend to server gesendet
     let newCrewMember = {
         vorname: req.body.vorname,
         nachname: req.body.nachname,
@@ -29,7 +29,7 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
         status : req.body.login
     }
     console.log('postrequest kommt an','req');
-
+    //speicher registrierten in JSON file
     fs.readFile(CrewFile, (err, data) => { //JSON lesen -> eingetragene user auslesen
         if(!err){
             data = JSON.parse(data), 
@@ -41,51 +41,58 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
         }
             // res end -> neue daten überschreiben
         fs.writeFile(CrewFile, JSON.stringify(data), (err) => {
-            console.log('was isn das??', data)
+            console.log('last user??', data)
         })
+
         res.status(200)
         .set({'Content-Type':'application/json' } )
-        .end(JSON.stringify({status:'success'}));  
-    }) //ende readfile
+        .end(JSON.stringify(data),  //antwort sucess
+        ) //ende readfile
+    }) 
 })//end post crew registrierung
 
-
-/** LOGIN  
- * crewmember Anmeldung
- * abchecken ob user und passwort in json vorhanden sind
- * */
-router.get('/', (req, res) => { 
-     console.log( 'anfrage get kommt an')
-     loginname = req.body.vorname,
-     loginpw = req.body.password
-     console.log(loginname, loginpw)
-
-    fs.readFile(CrewFile, (err, memberdata) => { 
+router.post('/login', (req, res) => {//vom frontend to server gesendet
+    let newCrewMember = {
+        email: req.body.email,
+        password: req.body.password,
+    }
+    console.log('postrequest kommt an','req');
+    //speicher registrierten in JSON file
+    fs.readFile(CrewFile, (err, data) => { //JSON lesen -> eingetragene user auslesen
         if(!err){
-            memberdata = JSON.stringify(memberdata), 
-            memberdata.crewMembers.forEach(one => {
-                // console.log(one.vorname, 'all names')
-                if(loginname === one.vorname && loginpw === one.password){
-                    console.log('existing user');
-                } else {
-                    console.log('not existing user');
-                }
+            data = JSON.parse(data);
+            //crewmember in Array als objekt fügen
+            //data.crewMembers.push(newCrewMember); //crewmembers im json 
+            //usser?
+            let existingUser = data.crewMembers.find(e => {
+                return e.email == newCrewMember.email && e.password == newCrewMember.password;
             })
-
-            memberdata.crewMembers.map(onemember(()=>{
-                console.log(loginpw)
-            }))
-            // memberdata = JSON.parse(memberdata), 
-            // console.log(memberdata)
-            //  password = data.login.password,
-         } 
-        else { // error bei file lesen
+            data = {login:existingUser}
+            console.log('eintragung erfolgreich!')
+        } else { // error bei file lesen
             console.log('eintragung fehlgeschlagen!')
-        }   
+        }
+
         res.status(200)
         .set({'Content-Type':'application/json' } )
-        .end(JSON.stringify({status:'success'}));    
-    }) //end readfile
-})//end get
+        .end(JSON.stringify(data),  //antwort sucess
+        ) //ende readfile
+    }) 
+})//end post crew registrierung
+
+/** LOGIN  
+ * crewmember Anmeldung members auslesen
+ * 
+ * */
+// router.get('/', (req, res) => { 
+//      console.log( 'anfrage get kommt an')
+     
+//     //liest aus crewfile
+//     fs.readFile(CrewFile, (err, data) => {  
+//         res.status(200)
+//         .set({'Content-Type':'application/json' } )
+//         .end(JSON.parse(data));    
+//     }) //end readfile
+// })//end get
 
 module.exports = router;
