@@ -4,16 +4,18 @@ const app = express();
 const nodemon = require('nodemon');
 
 
-const crewRoutes = require('./routes/crew.js');
-const regieRoutes = require('./routes/regieberreich.js');
-const projectRoues = require('./routes/projects.js');
+const registerRoutes = require('./routes/registerbck.js');
+const loginRoutes = require('./routes/loginbck.js');
+// const home = require('../') //projektsettings regie
+// const dashboard = require('../') //regie und permissed user posten etwas
+const regieRoutes = require('./routes/regieback.js');
+const projectRoues = require('./routes/projectsbck.js');
 
 // HEROKU SERVER: ENV nummer:
 const PORT = process.env.PORT || 5555;
 const server = app.listen( PORT , _=> {
     console.log( `Server läuft auf Port ${PORT}` )
 })
-
 app.use( function(req,res,next) {
     res.set({
         'Access-Control-Allow-Origin':'*', //give acess to any client
@@ -31,16 +33,17 @@ app.use( morgan( ':url :method :status :remote-addr' ) ); //basis configuratione
 app.use( express.static('static'));
 
 //not logged in
-app.get('/', (req, res) => {
-    res.send('Homepage')
-})
-//logged in start
-app.get('/dashboard', (req, res) => {
-    res.send('Dashboard Page')
+app.get('/home' && '/', (req, res) => {
+    return res.redirect('home.html');
 })
 
-app.use('/crew', crewRoutes);// write with regie
-app.use('/regieberreich', regieRoutes);//edit users, confirm users
+//logged in start
+app.get('/dashboard', (req, res) => {
+    return res.redirect('dashboard.html');
+})
+app.use('/login', loginRoutes);// write with regie
+app.use('/register', registerRoutes);// write with regie
+app.use('/regie', regieRoutes);//edit users, confirm users
 // app.use('/projects', projectRoues);//fully acess for loged in regie users
 
 
