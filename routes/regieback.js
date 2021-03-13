@@ -8,7 +8,7 @@ const ProjectDB = __dirname + '/../model/data/projects.json';
 const CrewFile = __dirname + '/../model/data/crew.json';
 
 router.get('/', (req, res) => {
-    return res.redirect('regie.html');
+    res.sendFile('regie.html');
 })
 // project {} button id saveNewProject
 // $('#newProjectTitle)

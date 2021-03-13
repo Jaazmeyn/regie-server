@@ -6,8 +6,8 @@ const nodemon = require('nodemon');
 
 const registerRoutes = require('./routes/registerbck.js');
 const loginRoutes = require('./routes/loginbck.js');
-// const home = require('../') //projektsettings regie
-// const dashboard = require('../') //regie und permissed user posten etwas
+const homeRoutes = require('./routes/homebck.js') //projektsettings regie
+const dashboardRoute = require('./routes/dashboardbck.js') //regie und permissed user posten etwas
 const regieRoutes = require('./routes/regieback.js');
 const projectRoues = require('./routes/projectsbck.js');
 
@@ -30,20 +30,25 @@ app.use( morgan( ':url :method :status :remote-addr' ) ); //basis configuratione
 
 
 //default abfangen .. muss in den anderen ordner kommen
+// app.use( express.static('templates'));
+
 app.use( express.static('static'));
 
+app.use("/", express.static("./routes/templates"));
+// //app.use("/", express.static(__dirname + "/static"));
+
+
 //not logged in
-app.get('/home' && '/', (req, res) => {
-    return res.redirect('home.html');
-})
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '../home.html');
+// })
 
 //logged in start
-app.get('/dashboard', (req, res) => {
-    return res.redirect('dashboard.html');
-})
+app.use('/dashboard', dashboardRoute);
 app.use('/login', loginRoutes);// write with regie
 app.use('/register', registerRoutes);// write with regie
 app.use('/regie', regieRoutes);//edit users, confirm users
+app.use('/home', homeRoutes);//edit users, confirm users
 // app.use('/projects', projectRoues);//fully acess for loged in regie users
 
 

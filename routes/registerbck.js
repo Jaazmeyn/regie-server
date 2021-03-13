@@ -11,7 +11,7 @@ router.use( bodyParser.json() );//um daten aus body auslesen zu können
 const CrewFile = __dirname + '/../model/data/crew.json';
 
 router.get('/', (req, res) => {
-    return res.redirect('register.html');
+    res.sendFile(__dirname + '/templates/register.html');
 })
 //main.js (ajax) sendet user im body mit
 router.post('/', (req, res) => {//neuer user vom frontend gesendet
@@ -33,7 +33,6 @@ router.post('/', (req, res) => {//neuer user vom frontend gesendet
             //crewmember in Array als objekt fügen
             data.crewMembers.push(newCrewMember); //crewmembers im json 
             console.log('eintragung erfolgreich!')
-
         } else { // error bei file lesen
             console.log('eintragung fehlgeschlagen!', data)
         }
