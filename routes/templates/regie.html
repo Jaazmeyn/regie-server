@@ -18,53 +18,43 @@
 <body>
   <main class="container">
 <!-- Nav tabs -->
-<ul class="nav nav-tabs fixed top" id="myTab" role="tablist">
+<!-- <ul class="nav nav-tabs fixed top" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
       <i class="fa fa-home"></i> Home of Regie</button>
   </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-      <i class="fa fa-user"></i> My Profile</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">
-      <i class="fa fa-share-alt"></i>My Projects as Projectmember</button>
-  </li>
-  
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" hdata-bs-targetref="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">
-      <i class="fa fa-power-off"></i> Log out </button>
-  </li>
-</ul>
+</ul> -->
 
 <!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
     
     <div class="d-flex align-items-start">
       <div class="nav flex-column nav-pills me-3 fixed left responsive" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true"><i class="fa fa-tasks"></i> Current Project</button>
-        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false"><i class="fa fa-users"></i> Contacts</buttona>
-        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"><i class="fa fa-newspaper-o"></i> Dashboard</button>
-        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fa fa-comment-o"></i> Direct</button>
+        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+          <i class="fa fa-tasks"></i> Current Project </button>
+        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
+          <i class="fa fa-users"></i> Contacts </buttona>
+        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+          <i class="fa fa-user"></i> My Profile </button></button>
+        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+          <i class="fa fa-power-off"></i> Log out </button>
       </div>
       <div class="tab-content container" id="v-pills-tabContent"><!--First tab in first tab -->
         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
           
           <h2><i class="fa fa-tasks"></i>current Project</h2>
-          <h3>no projects jet</h3>
+          <div id="projarea"></div>
+          <h3 id="current-projectTitle">no projects jet</h3>
           <!-- new Project -->
-          <h5>create one</h5>
+          <h5 id="synopsiss">create one</h5>
           <!-- modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Create Project</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" id="createNewProj">Create Project</button>
           <div  id="newProjModal"class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="modal-content container" >
-                  <h3>Your new Project</h3>      
-                  <div class="input-group input-group-lg">
+                  <h3 id="projsettings">Your new Project</h3>      
+                  <div id="settingsinput" class="input-group input-group-lg">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="inputGroup-sizing-lg">Project Title</span>
+                      <span class="input-group-text" id="inputGroup-sizing-lg projTitlel">Project Title</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Large" id="newProjectTitle" aria-describedby="inputGroup-sizing-sm">
                   </div>
@@ -115,15 +105,16 @@
 
         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
           <h2>contacts<i class="fa fa-user"></i></h2>
-          <table class="table caption-striped " id="crewmemberlist">
+          <table class="table caption-striped container" id="crewmemberlist">
             <caption>List of main crewmembers(all day)</caption>
             <thead>
               <tr class="bg-light">
                 <th scope="col"></th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
                 <th scope="col">email</th>
-                <th scope="col">profi</th>
+                <th scope="col">mobile</th>
+                <th scope="col">id</th>
               </tr>
             </thead>
             <tbody id="memberoverview">
@@ -134,118 +125,85 @@
                 <td>@mdo</td>
                 <td>DOP</td>
               </tr>
-              <tr >
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>TALENT</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>CUT</td>
-              </tr>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>DOP</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>TALENT</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>CUT</td>
-              </tr> <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>DOP</td>
-
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>TALENT</td>
-
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>CUT</td>
-              </tr> -->
-
+              -->
             </tbody>
           </table>
+          <!-- crewmember modal -->
+          <button type="button" class="btn btn-primary addUser" data-toggle="modal" >Add crewmember</button>
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="AddnewUserModal">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content ">
 
-          <h2 title="click on contacts and choose for message all">messages</h2>
+                <div class="container">
+                  <h3>Add crewMember</h3>
+                  <form class="row g-3 needs-validation container" novalidate>
+                    <div class="col-md-4">
+                        <label for="CrewmemberfirstnameInput" class="form-label " >First name</label>
+                        <input value="" type="text" class="form-control cmVName" id="CrewmemberfirstnameInput" required>            
+                    </div>
+                    <div class="col-md-4">
+                        <label for="CrewmemberlastnameInput" class="form-label ">Last name</label>
+                        <input value="isa" type="text" class="form-control cmNName" id="CrewmemberlastnameInput" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="CrewmemberemailInput" class="form-label ">Mail</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text" id="inputGroupPrepend">@</span>
+                            <input value="email@lisa" type="text" class="form-control cmMail" id="CrewmemberemailInput" aria-describedby="inputGroupPrepend" required>
+                        </div>
+                    </div>
 
+                    <div class="col-md-4">
+                        <label for="CrewmembernumberInput" class="form-label">Number</label>
+                        <input value="12345" type="number" class="form-control cmNumber" id="CrewmembernumberInput" required>                
+                    </div>      
+                    <br>
+                    <br>    
+                    <br>        
+    
+                    <div class="col-12">
+                        <button class="btn btn-primary " id="saveNewCrewMemberButton" type="submit">Save member</button>
+                    </div>
+                </form>
+              </div>
 
-        </div>
+              </div>
+            </div>
+          </div>
+        </div><!--end crewmember tab-->
 
         <!-- dashboard -->
         <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-          <h2><i class="fa fa-newspaper-o"></i> Dashboard</h2>
+          <!-- <h2><i class="fa fa-newspaper-o"></i> Dashboard</h2>
           <div id="newsfeed">
               <h3>made the Banner IMG</h3>
               <img src="./img/current-project.jpeg" class="currentprojimg" alt="">
               <p class="titelbeschriebung"> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-            </div>
+            </div> -->
+            <img src="./img/profilbild.png" alt="" class="profilbild">
+              <div class="container">
+                <h2>Hello Director!</h2>
+                <button class="btn btn-secondary">add profilefoto</button><img src="" alt="img">
+                <p id="regiename">your Name</p>
+                <h4>your projects</h4>
+                <div class="allproj"></div>
+                <ul>
+                  <li>Dark Dog</li>
+                  <li>The Family</li>
+                  <li>Sunken ship</li>
+                </ul>
+                <button class="btn btn-secondary" title="if you make current the homefeed will change">make current</button>
+
+
+                <p>current project</p>
+              </div>
         </div>
         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
       </div>
     </div>
     
-  </div>
-  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    <img src="./img/profilbild.png" alt="" class="profilbild">
-    <div class="container">
-      <h2>Hello Director!</h2>
-      <button class="btn btn-secondary">add profilefoto</button><img src="" alt="img">
-      <p id="regiename">your Name</p>
-      <h4>your projects</h4>
-      <div class="allproj"></div>
-      <ul>
-        <li>Dark Dog</li>
-        <li>The Family</li>
-        <li>Sunken ship</li>
-      </ul>
-      <button class="btn btn-secondary" title="if you make current the homefeed will change">make current</button>
 
-
-      <p>current project</p>
-    </div>
-
-
-  </div>
-  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-    <div class="example-container" >
-      <div class="example-row">
-        <div class="example-content-main">Main content</div>
-        <div class="example-content-secondary">Secondary content</div>
-        <button class="btn btn-primary"><a href="./index.html">login</a>
-        </button>
-      <button class="btn btn-primary">register</button>
-      </div>
-    </div>
-  </div>
+  
   <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab" class="logoutpage">
 
 

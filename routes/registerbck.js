@@ -33,6 +33,7 @@ router.post('/', (req, res) => {//neuer user vom frontend gesendet
             //crewmember in Array als objekt fügen
             data.crewMembers.push(newCrewMember); //crewmembers im json 
             console.log('eintragung erfolgreich!')
+            
         } else { // error bei file lesen
             console.log('eintragung fehlgeschlagen!', data)
         }

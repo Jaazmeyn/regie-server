@@ -33,7 +33,7 @@ REGISTRIERUNG
 
         $('#registerbtn').on('click', function(e){
             e.preventDefault();
-            console.log('registerclick')
+            console.log('registerclick');
 
             // let Api = $.getJSON("http://jsonip.appspot.com?callback=?" = () => data.ip);
             let newTeamMember = {
@@ -55,7 +55,6 @@ REGISTRIERUNG
                     let allTeammembers = req; 
                     console.log(req, 'registersuccess')
                     registrierung(req, allTeammembers, newTeamMember)
-                    UserTable(allTeammembers, newTeamMember);
                     console.log(res, 'reponse')
                     //ZU USERINTERFACE!! im /regie $(crewmembers..tbody each bekommt td und daneben button)
                     // registrierte user zu regie userinterface
