@@ -19,7 +19,7 @@ const server = app.listen( PORT , _=> {
 app.use( function(req,res,next) {
     res.set({
         'Access-Control-Allow-Origin':'*', //give acess to any client
-        'Access-Control-Allow-Methods': 'GET, POST', 
+        'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 
         'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
     })
     next();//damit andere routings weitermachen
@@ -33,15 +33,28 @@ app.use( morgan( ':url :method :status :remote-addr' ) ); //basis configuratione
 // app.use( express.static('templates'));
 
 app.use( express.static('static'));
+app.use( express.static('templates'));
 
-app.use("/", express.static("./routes/templates"));
+//app.use("/", express.static(__dirname + "./routes/templates"));
 // //app.use("/", express.static(__dirname + "/static"));
 
 
 //not logged in
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '../home.html');
-// })
+app.get('/', (req, res) => {
+    res.redirect('/home');
+})
+app.get('/register.html', (req, res) => {
+    res.redirect('/register');
+})
+app.get('/home.html', (req, res) => {
+    res.redirect('/home');
+})
+app.get('/login.html', (req, res) => {
+    res.redirect('/login');
+})
+app.get('/register.html', (req, res) => {
+    res.redirect('/register');
+})
 
 //logged in start
 app.use('/dashboard', dashboardRoute);
@@ -50,14 +63,6 @@ app.use('/register', registerRoutes);// write with regie
 app.use('/regie', regieRoutes);//edit users, confirm users
 app.use('/home', homeRoutes);//edit users, confirm users
 // app.use('/projects', projectRoues);//fully acess for loged in regie users
-
-
-
-const setCrewmember = function(req, res, next){
-    req.user;
-
-}
-
 
 
 /**

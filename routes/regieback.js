@@ -32,14 +32,13 @@ router.post('/newproject', (req, res) => {
                console.log('proj write',data)
            })
             res.status(200)
-            .end(JSON.stringify(newProject))
+            .set("application/json")
+            .end(JSON.stringify(newProject.Title, newProject.Synopsis))
             
         } else {
             console.log('projekt nicht gespeichert!!')
             res.status(200)
-            .set("application/json")
-
-                .end(JSON.stringify({status:'not success'}))
+            .end(JSON.stringify({status:'not success'}))
         }
     })
 })
@@ -81,7 +80,7 @@ router.get('/crewmemberlist', (req, res) => { //vom frontend to server gesendet
     fs.readFile(CrewFile, (err, data) => { //JSON lesen -> eingetragene user auslesen
         if(!err){
             data = JSON.parse(data);
-            console.log(data)
+            //console.log(data)
         } else { // error bei file lesen
             console.log('auslesen der user fehlgeschlagen')
         }
@@ -93,17 +92,19 @@ router.get('/crewmemberlist', (req, res) => { //vom frontend to server gesendet
 })//end crewmemberpaste
 
 //EDIT MEMBERS
+let Id;
 router.put('/crewmemberlist/:id', (req, res) => {
     console.log('PUT request kommt an');
 
     // Neue FRONTEND DATEN
     let Temmemberupdate = {
-        Id: req.body.Id,
+        id: req.body.Id,
         newvn : req.body.newvn,
         newnn : req.body.newnn,
         newmail : req.body.newmail,
         newnumber : req.body.newnumber
     }
+    Id = id;
     //JSON DATEN
     fs.readFile(CrewFile, (err, data) => { // alte user
         if(!err){
@@ -144,6 +145,32 @@ router.put('/crewmemberlist/:id', (req, res) => {
             .send(JSON.stringify({ message: "success"}))
     })//end readfile
 })
+
+//DELETE Users
+let id;
+router.delete('/crewmemberlist/'+ id, (req, res) => {
+    console.log('DELETE request kommt an');
+    id = req.body.id;
+
+    fs.readFile(CrewFile, (err,data) => {
+        if(!err){
+            data = JSON.parse(data)
+            data.crewMembers.find(each => {
+                let thisUser = each.crewMembers.id == id
+
+                fs.writeFile(CrewFile, JSON.stringify(data), (err)=>{
+                    delete crewMembers.thisUser;
+
+                    console.log('deletet', crewMembers.thisUser)
+
+                });
+            }); //ende find
+        } else {
+            console.log('keine id gefunden')
+        }
+    })//end readfile
+})//ende delete
+
 
 
 module.exports = router;

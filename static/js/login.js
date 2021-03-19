@@ -10,18 +10,26 @@ $('#loginbtn').on('click', function(e){
         email:$('.loginname').val(),
         password:$('.loginPasswort').val(),
     }
-
     $.ajax({ //schicke userdater vom Server 
         url: '/login',
         method: 'post',
         data:JSON.stringify(login), //schick eingegebene daten an server
         contentType:'application/json',
-        success:function( res, req ){ //req -> db ist user admin?
+        success:function( res ){ //req -> db ist user admin?
             // console.log('checkmal ob vorhanden')
-                console.log(JSON.stringify(res), 'request json')
+                console.log(res, 'request json')
+                res = JSON.parse( res );
             //  if(res.status == 'success'){
                 //res.redirect('../dashboard.html');
-                console.log('success')
+                //console.log('success', res.body)
+                let login = res.login;
+                console.log(login)
+                if (login == true){
+                    //weiterleiten zu dashboard?
+                    top.location.href="/dashboard";
+                } else {
+                    console.log('not existing user')
+                }
                 
             //     let memberdata = res;
             //     console.log(res)
@@ -37,12 +45,12 @@ $('#loginbtn').on('click', function(e){
                     //      console.log('not existing user');
                     // }
                 //})
-                console.log(login.email ,'logged in', res)
+                //console.log(login.email ,'logged in', res)
             //     req.indexOf( newTeamMember )
                 //weiterleitung in newsberreich
         },//sucess
         error: function() {
-            console.log('error')
+            console.log('error', login)
         },//err
     })//ajax
 })//onclick login

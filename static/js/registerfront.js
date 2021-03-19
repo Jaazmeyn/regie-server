@@ -1,3 +1,7 @@
+// $('#options').on('click', function(e){
+//     e.preventDefault();
+//     $('#modal').modal('toggle')
+// })//end registersettings
 // disabling form submissions if there are invalid fields
 
 'use strict'
@@ -18,23 +22,24 @@ Array.prototype.slice.call(forms).forEach(function (form) {
 /*
 REGISTRIERUNG
 **/   
-        const registrierung = (allTeammembers, newTeamMember) => {
-            console.log('user wurde hinzugefügt')
-            // if(res.status == 200){
-            $( '#username').html(`Hello ${$('.cmVName').val()}  <br>please Login here <br>`);
-            console.log((allTeammembers.crewMembers[0]), 'weiter in den loginberreich');
+        // const registrierung = (allTeammembers, newTeamMember) => {
+        //     console.log('user wurde hinzugefügt')
+        //     // if(res.status == 200){
+        //     $( '#username').html(`Hello ${$('.cmVName').val()}  <br>please Login here <br>`);
+        //     console.log((allTeammembers.crewMembers[0]), 'weiter in den loginberreich');
             
-            console.log(newTeamMember, 'new teammember');
-        };
-       
-        const UserTable = (allTeammembers, newTeamMember) => {
-            console.log('usertable')
-        };
+        //     console.log(newTeamMember, 'new teammember');
+        // };
+
 
         $('#registerbtn').on('click', function(e){
             e.preventDefault();
+//             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+//                  Launch demo modal
+//              </button>
+           
             console.log('registerclick');
-
+            
             // let Api = $.getJSON("http://jsonip.appspot.com?callback=?" = () => data.ip);
             let newTeamMember = {
                 vorname:$('.cmVName').val(), 
@@ -44,6 +49,7 @@ REGISTRIERUNG
                 number:$('.cmNumber').val(),
                 id: Math.random().toString(),
                 projectsId:[],
+                // ROLE: role,
                 login: false,
             }
             $.ajax({ //schicke ausgelesene daten an Server
@@ -65,6 +71,8 @@ REGISTRIERUNG
             })//end AJAX
         })//end register
     }, false)//gegen bubbling
+
+ 
 });
 
 
