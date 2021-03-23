@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');//um auf datein zugreifen
 const bodyParser = require( 'body-parser' );
+const { json } = require('body-parser');
 router.use( bodyParser.json() );//um daten aus body auslesen zu können
+//const regieprofile = require('./regie/regieprofilebck.js')
 
 const ProjectDB = __dirname + '/../model/data/projects.json';
 const CrewFile = __dirname + '/../model/data/crew.json';
@@ -91,66 +93,60 @@ router.get('/crewmemberlist', (req, res) => { //vom frontend to server gesendet
     }) 
 })//end crewmemberpaste
 
-//EDIT MEMBERS
-let Id;
-router.put('/crewmemberlist/:id', (req, res) => {
-    console.log('PUT request kommt an');
 
+
+//EDIT MEMBERS
+router.put('/crewmemberlist/:id', (req, res) => {
+    console.log(req.params, 'PUT request kommt an');
+
+    // findByIdAndUpdate
     // Neue FRONTEND DATEN
-    let Temmemberupdate = {
-        id: req.body.Id,
-        newvn : req.body.newvn,
-        newnn : req.body.newnn,
-        newmail : req.body.newmail,
-        newnumber : req.body.newnumber
-    }
-    Id = id;
+
     //JSON DATEN
+    const userId = req.params; //aus url id auslesen aber muss auch im frontend iwi mitgeschickt werden
     fs.readFile(CrewFile, (err, data) => { // alte user
         if(!err){
-            data = JSON.parse(data) //data is undefined...
-            let allIds = [];
-            //data.crewMembers.id.push(allIds)
-            console.log(allIds)
-            //console.log(data, 'data', Temmemberupdate.Id)
-            //let changeMemberId = Temmemberupdate.Id;
-            //console.log(changeMemberId, 'changeMemberId', data);//changememberId geht
-
-            // let membertochange = data.crewMembers.id.forEach(element => {
-            //         if(this == changeMemberId){
-            //             return this;
-            //         }
-            //     else{
-            //         console.log('not found')
-            //     }
-            // });
-           
-            // finde crewMembers.id == Temmemberupdate.Id
-            //console.log('crewMembers.id,Temmemberupdate.Id'+membertochange)
-            // if(crewMembers.id == Temmemberupdate.Id){
-
-            // }
-            //data.crewMembers.push(Temmemberupdate, )
-
-            fs.writeFile(CrewFile, JSON.stringify(data), (err)=>{
-                console.log('ueberschreiben?? ', data)
-                let oldMember = data;
-                //console.log(crewMembers.id)
-            })//end writefile
+            data = JSON.parse(data)//weil ich weiterarbeiten will in js obj
+            data.crewMembers.forEach(function(one, index ){
+                if ( one.id == userId.id ) {
+                    data.crewMembers[index].vorname = req.body.newvn;
+                    data.crewMembers[index].nachname = req.body.newnn;
+                    data.crewMembers[index].email = req.body.newmail;
+                }
+            })
+            //data[userId] = req.body; //data of the user with this id
+            console.log(data)
+                //problem buffer..
+                fs.writeFile(CrewFile, JSON.stringify(data), (err)=>{
+                res.status(200)
+                    .set({'Content-Type':'application/json' } )
+                    .send(JSON.stringify({ msg : `users id:${userId.id} updated`}) )
+                })//end writefile
         } else { // error bei file lesen
             console.log('auslesen der user fehlgeschlagen')
-        }
-        res.status(200)
+            res.status(200)
             .set({'Content-Type':'application/json' } )
-            .send(JSON.stringify({ message: "success"}))
+            .send(`fehler beim updaten`)
+        }
+
     })//end readfile
 })
 
-//DELETE Users
-let id;
-router.delete('/crewmemberlist/'+ id, (req, res) => {
+//DELETE Users 
+router.delete('/crewmemberlist/:id' , (req, res) => { //by query not body
     console.log('DELETE request kommt an');
-    id = req.body.id;
+
+    const { id } = req.params; //frontendId
+    //look if exists
+    const deleted = crewMembers.find( user => user.id == id)
+    console.log(deleted, 'deleted')
+    if(deleted){
+        crewMembers = crewMembers.fileter(user[id])
+    } else {
+        res.status(404)
+        res.send(json.stringify({"message":"no"}))
+    }
+    //id = req.body.id;
 
     fs.readFile(CrewFile, (err,data) => {
         if(!err){

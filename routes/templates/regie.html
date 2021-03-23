@@ -21,13 +21,13 @@
           <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"> <i class="fa fa-user"></i>Profile</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false"><i class="fa fa-users"></i>Contacts</a>
+          <a class="nav-link active" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="true"><i class="fa fa-users"></i>Contacts</a>
         </li>
           <li class="nav-item">
-            <a class="nav-link active" id="pills-project-tab" data-toggle="pill" href="#pills-project" role="tab" aria-controls="pills-project" aria-selected="true">Project</a>
+            <a class="nav-link " id="pills-project-tab" data-toggle="pill" href="#pills-project" role="tab" aria-controls="pills-project" aria-selected="false">Projects</a>
           </li>
           <li class="nav-item">
-            <a title="log out"class="nav-link" id="pills-logout-tab" data-toggle="pill" href="login.html" role="tab" aria-controls="pills-logout" aria-selected="true"><i class="fa fa-power-off"></i> </a>
+            <a title="log out"class="nav-link" id="pills-logout-tab" data-toggle="pill" href="login.html" role="tab" aria-controls="pills-logout" aria-selected="false"><i class="fa fa-power-off"></i> </a>
           </li>
 
         <!-- <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
@@ -39,14 +39,22 @@
       </ul>
       <!-- tab-content -->
       <main class="container">
-      <div class="tab-content continer" id="pills-tabContent">
+      <div class="tab-content container" id="pills-tabContent">
         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                       <div class="container">
                         <div id="h2">
+                          <!-- IMG container -->
+                            <div id="imageContainer" class="text-center">
+                              <img src="" id="profilbild" alt="" class="rounded shadow">
+                            </div>
                             <img src="./img/profilbild.png" alt="" class="profilbild ">
                             <h2>Hello Director!</h2>
                           </div>
-                            <button class="btn btn-secondary" id="addProfilephoto">add profilefoto</button><img src="" alt="img">
+                          <!-- bilduploat mit form data -->
+                          <form action="/upload" id="bilduploader" method="POST" enctype="multipart/form-data">
+                            <input type="file" class="form-control" accept=""image="image/*" name="photo">
+                            <input type="submit" class="btn btn-info mt-3" value="upload">
+                          </form>
                             <p id="regiename">your Name</p>
                             <h4>your projects</h4>
                             <div class="allproj"></div>
@@ -59,7 +67,7 @@
                             <p>current project</p>
                           </div>
         </div>
-        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <div class="tab-pane fade show active" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                           <h2>contacts<i class="fa fa-user"></i></h2>
                           <table class="table caption-striped container" id="crewmemberlist">
                             <caption>List of main crewmembers(all day)</caption>
@@ -85,13 +93,13 @@
                             </tbody>
                           </table>
                           <!-- crewmember modal -->
-                          <button type="button" class="btn btn-primary addUser" data-toggle="modal" >Add crewmember</button>
+                          <button type="button" class="btn btn-primary addUser" data-toggle="modal">Add crewmember</button>
                             <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="AddnewUserModal">
                               <div class="modal-dialog modal-lg">
                                 <div class="modal-content ">
                                 <div class="container">
                                   <h3>Add crewMember</h3>
-                                  <form class="row g-3 needs-validation container" novalidate>
+                                  <form class="row g-3 needs-validation container"  id="memberinput" novalidate>
                                     <div class="col-md-4">
                                         <label for="CrewmemberfirstnameInput" class="form-label " >First name</label>
                                         <input value="" type="text" class="form-control cmVName" id="CrewmemberfirstnameInput" required>            
@@ -110,12 +118,23 @@
                                     <div class="col-md-4">
                                         <label for="CrewmembernumberInput" class="form-label">Number</label>
                                         <input value="12345" type="number" class="form-control cmNumber" id="CrewmembernumberInput" required>                
-                                    </div>      
+                                    </div>  
+                                        
+                                    <div class="col-12">
+                                      <br>    
+
+                                      <button class="btn btn-secondary " id="addToProject" type="submit">add to Project</button>
+                                      <br>    
+                                      <br> 
+                                  </div>
+                                  <div id="newinput"></div>
                                     <br>
                                     <br>    
                                     <br>        
                                     <div class="col-12">
                                         <button class="btn btn-primary " id="saveNewCrewMemberButton" type="submit">Save member</button>
+                                        <br>    
+                                        <br> 
                                     </div>
                                 </form>
                               </div>
@@ -123,7 +142,7 @@
                             </div>
                           </div>
         </div>
-        <div class="tab-pane fade show active" id="pills-project" role="tabpanel" aria-labelledby="pills-project-tab">
+        <div class="tab-pane fade " id="pills-project" role="tabpanel" aria-labelledby="pills-project-tab">
                       <h2><i class="fa fa-tasks"></i>current Project</h2>
                       <div id="projarea"></div>
                       <h3 id="current-projectTitle">no projects jet</h3>
@@ -187,7 +206,7 @@
       </div>
 </main>
 
-<script src="./js/regiefront.js">
-</script>
+<script src="./js/regiefront.js"></script>
+<script src="../../static/js/regie/profile.js"></script>
 </body>
 </html>

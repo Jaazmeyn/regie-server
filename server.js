@@ -34,6 +34,7 @@ app.use( morgan( ':url :method :status :remote-addr' ) ); //basis configuratione
 
 app.use( express.static('static'));
 app.use( express.static('templates'));
+app.use( express.static('regie'));
 
 //app.use("/", express.static(__dirname + "./routes/templates"));
 // //app.use("/", express.static(__dirname + "/static"));

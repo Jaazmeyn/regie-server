@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     //res.redirect('login.html');
     res.sendFile(__dirname + '/templates/login.html')
 })
-
+//login
 router.post('/', (req, res) => {//vom frontend to server gesendet
     let loginMember = {
         email: req.body.email,
@@ -26,7 +26,6 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
         if(!err){
             data = JSON.parse(data); /* all users */ 
            // console.log(data)
-            let e; //einzelner außerhalb abspeichern
             let login = false;
             //existing user returnt true oder false
             data.crewMembers.map(e => { //aus file einzelne mail
@@ -38,13 +37,13 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
                     if(e.status == true){
                         login = true;
                         // if(e.role == admin){
-                        //     //in die /regieroute
-                        //console.log('status == '+ e.status +' -> in den regieberrreich')
-                            //router.sendFile('/regie.html')
+                                // role == admin client -> in die /regieroute
                         // }
-                        // if(e.role == user){
+                        // else if(e.role == user){
                         //     //in /dashboard
-                        // }
+                        // } else {
+                            // role = visitor
+                        //}
                        // res.status(200)
                        //     .end(JSON.stringify({"login":"true","t":1}))
                     }
@@ -69,23 +68,8 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
                    // res.status(200)
                    //     .end(JSON.stringify({"login" : "false"}))
                 }
-               //console.log('nach abprüfen ob vorhanden und login true',e.email == loginMember.email && e.password == loginMember.password)
-               //console.log(login)
+
             })  
-
-            //console.log(e, login, existingUser, 'exists?????') //beides undefined
-            //data = {login:existingUser}
-            //data = login;
-            //console.log(data)
-           // console.log('user durchsuchen erfolgreich!')
-
-                // res.status(200)
-                //     .set({'Content-Type':'application/json' } )
-                //     .use('dashboard.html')
-                //     .sendFile('/routes/templates/dashboard.html') //send data -> return geht nd, existing user undefined?
-                //     .end(JSON.stringify({"login":"true"}))
-        
-
             res.status(200).end( JSON.stringify({login:login}));
 
         }//ende readfile(!err)
@@ -94,31 +78,8 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
             res.status(200)
                 .end(JSON.stringify({"login" : "false"}))
         }
-       // console.log('was ist data hier',data)
-
-       
-            //.end(JSON.stringify(data));  //antwort sucess
-
-       
-
 
     }) //ende readfile
 })//end post crew login
-
-/** LOGIN  
- * 
- * crewmember Anmeldung members auslesen
- * 
- * */
-// router.get('/', (req, res) => { 
-//      console.log( 'anfrage get kommt an')
-     
-//     //liest aus crewfile
-//     fs.readFile(CrewFile, (err, data) => {  
-//         res.status(200)
-//         .set({'Content-Type':'application/json' } )
-//         .end(JSON.parse(data));    
-//     }) //end readfile
-// })//end get
 
 module.exports = router;

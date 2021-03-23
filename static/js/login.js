@@ -15,7 +15,7 @@ $('#loginbtn').on('click', function(e){
         method: 'post',
         data:JSON.stringify(login), //schick eingegebene daten an server
         contentType:'application/json',
-        success:function( res ){ //req -> db ist user admin?
+        success:function( res ){ //ist user admin?
             // console.log('checkmal ob vorhanden')
                 console.log(res, 'request json')
                 res = JSON.parse( res );
@@ -29,26 +29,10 @@ $('#loginbtn').on('click', function(e){
                     top.location.href="/dashboard";
                 } else {
                     console.log('not existing user')
+                    top.location.href="/register";
+                    
                 }
-                
-            //     let memberdata = res;
-            //     console.log(res)
-            //     memberdata.crewMembers.map(onemember(()=>{
-            //         console.log(loginpw)
-            //     }))
-
-                // memberdata.crewMembers.forEach(one => {
-                //     // console.log(one.vorname, 'all names')
-                //     if(loginname === one.vorname && loginpw === one.password){
-                //         console.log('existing user');
-                    //  } else {
-                    //      console.log('not existing user');
-                    // }
-                //})
-                //console.log(login.email ,'logged in', res)
-            //     req.indexOf( newTeamMember )
-                //weiterleitung in newsberreich
-        },//sucess
+        },//success
         error: function() {
             console.log('error', login)
         },//err
