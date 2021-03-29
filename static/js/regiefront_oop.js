@@ -207,5 +207,185 @@ class user{
 }
 let member = new user();
 
+//////////    PROJECT     ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 
-  
+class Projectlist{
+    constructor(){
+        this.Get();
+        this.saveProjCount = 0;
+        this.Projecttitle;
+    }
+    makeFilmcards(data){ //warum ist filmcards keine funktion?????
+        data.projects.forEach(einzelnes => {
+            console.log(einzelnes)
+            let filmTitile = einzelnes.title;
+            let filmSynopsis = einzelnes.syn;
+            let filmId = einzelnes.id;
+            let img = einzelnes.pfad;
+    
+            let html = `
+            <img class="card-img-top" src="../../uploads/images/${img}" alt="Film img">
+            <div class="card-body">
+                <h5 class="card-title">${filmTitile}</h5>
+                <p class="card-text synopsis">${ filmSynopsis }Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a class="btn btn-primary projectsettings">Project Settings</a>
+            </div>`;
+            
+            $('<div>').html(html).attr({
+                'class': 'card',
+                "data-filmId": filmId,
+                "style":"width: 18rem",
+            }).appendTo('#projectlist')
+        })
+        if(data.projects != 0){
+            $('#current-projectTitle').html('current project: '+ data.projects[0].title)
+            $('#createpro').html('create a new one')
+        }
+    }
+    Get(){
+        $.ajax({ // get all projects fill filmcards
+            url:'regie/projects',
+            method:'get',
+            success:function(data){
+                //1card/film
+                data = JSON.parse(data);
+                
+                this.makeFilmcards(data);
+                this.changeProject();
+            
+            },//end success
+            error:function(){
+                console.log('XHR error get filmlist')
+            }
+        })//ende fill filmcards
+    } 
+
+    changeProject(){
+        $('.projectsettings').on('click', function(e){
+            e.preventDefault();
+            let clicked = this;
+            let clickedTitle = $(clicked).parent().children().html()
+            let clickedSyn = $(clicked).parent().children().next().html()
+
+            $('#newProjModal').modal('show')
+            $('#projsettings').html('Update Project')
+
+            $('#newProjectTitle').val(clickedTitle);
+            $('#newProjSynopsis').val(clickedSyn);
+        
+            // modal daten auslesen
+            // zu usern projektid fügen
+            function createSelectsForMembers(){
+                $.ajax({ // projekt daten in den user unter projekte speichern
+                        url: 'regie/crewmemberlist',
+                        method: 'get',
+                        success:function(data){
+                                //let allTeammembers =  {"crewMembers":[{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.33682613078290247","status":false},{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.5783424493750503","status":false}]};
+                                let html = `
+                                            <select class="custom-select" id="memberselect">
+                                            <option selected>Film Crew...</option>
+                                            </select>
+                                            <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary appendmemberinArr" type="button">Button</button>
+                                            <div class="projectmembers"></div>
+                                            </div>                                
+                                            `;
+                                $('.userselect').html(html);
+
+                                data.crewMembers.map((einzelner) => {
+                                    let vname = einzelner.vorname;
+                                    console.log(vname,'vname')
+                                    $('<option>').val(einzelner.id).html(vname).appendTo('#memberselect')
+                                    console.log(einzelner.vorname)
+                                });
+                                console.log(data)
+                                                                           
+                                $('appendmemberinArr').on('click', function(){
+                                    //member aus imputfeld auslesen und value
+                                    let member = $('<div>')
+                                                    .html($('#memberselect').html())
+                                                    .val($('#memberselect').val())
+                                    $(member).appendTo('.projectmembers')
+                                })
+                        },
+                        error:_=>{
+                            console.log('XHR getmembers for projectupdate')
+                        }
+                });//end ajax
+            }// end createSelectsForMembers
+            createSelectsForMembers()
+            //save prj changes in modal
+            function updateProj(){
+                $('#saveNewProject').on('click', function(){
+                        let projUpdate = {
+                            newtitle : $('#newProjectTitle').val(),
+                            newsyn: $('#newProjSynopsis').val(),
+                            crewmembers:crewmembersArr,
+                            titelBild:titelBild,
+                        }
+                        $.ajax({
+                            url:'/regie/projects',
+                            method:'put',
+                            data:JSON.stringify(projUpdate),
+                            contentType: 'application/json',
+                            success:function(res){
+                                console.log('film was updated')
+                            },
+                            error:function(){
+                                console.log('aenderungen konnten nicht gespeichert werden')
+                            }
+                        })
+                    })//end onclick
+            }//end updateProj
+            updateProj();
+
+        })// ende projectsettings
+    }//ende changeproj
+    New(){
+        $('#createNewProj').on('click', function(e){
+            $('#newProjModal').modal('show');
+            $('#closeProjectModal').on('click', _=>  $('#newProjModal').modal('hide'));
+        
+            //save Projects in JSON
+            $('#saveNewProject').on('click', function(e){
+                e.preventDefault();
+                saveProjCount++;
+                let id = ($('#newProjectTitle').val() + (Math.random().toString())).replace(' ','_');
+        
+                let newProject = {
+                    title: $('#newProjectTitle').val(),
+                    syn: $('#newProjSynopsis').val(),
+                    id: id,
+                    pfad: $('.titelBild').val(),
+                    current: false, //erst nach button curren = active in der übersicht radiobutton besser da kann man nur ens wählen
+                }
+                $('#newProjModal').modal('hide');
+                console.log(newProject)
+        
+                $.ajax({ // projekt daten in den user unter projekte speichern
+                    url: '/regie/newproject',
+                    method: 'post',
+                    data: JSON.stringify(newProject), //<- vom server in json gespeichert
+                    contentType:'application/json',
+                    success:( res ) => {
+                        console.log('projekt wurde in die datenbank gefügt')
+                    },
+                    error:() => {
+                        console.log('XHR ERROR')
+                    }
+                })//end ajax
+            })//ende save proj onclick
+        })//ende createnewproj onclick
+    }
+}
+let tomsProjcts = new Projectlist();
+
+
+
+
+
+
+    
+
+

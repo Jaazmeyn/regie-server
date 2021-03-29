@@ -6,10 +6,11 @@ const nodemon = require('nodemon');
 
 const registerRoutes = require('./routes/registerbck.js');
 const loginRoutes = require('./routes/loginbck.js');
+
 const homeRoutes = require('./routes/homebck.js') //projektsettings regie
 const dashboardRoute = require('./routes/dashboardbck.js') //regie und permissed user posten etwas
 const regieRoutes = require('./routes/regieback.js');
-const projectRoues = require('./routes/projectsbck.js');
+const projectRoutes = require('./routes/projectsbck.js');
 
 // HEROKU SERVER: ENV nummer:
 const PORT = process.env.PORT || 5555;
@@ -58,12 +59,14 @@ app.get('/register.html', (req, res) => {
 })
 
 //logged in start
-app.use('/dashboard', dashboardRoute);
-app.use('/login', loginRoutes);// write with regie
 app.use('/register', registerRoutes);// write with regie
+
+app.use('/login', loginRoutes);// write with regie
+//app.use('seccion') wenn seccion da alles normal ausführen weiterletiten z dashboard(im dashboard mit if elseseccionabgleichen ) 
+app.use('/dashboard', dashboardRoute);
 app.use('/regie', regieRoutes);//edit users, confirm users
 app.use('/home', homeRoutes);//edit users, confirm users
-// app.use('/projects', projectRoues);//fully acess for loged in regie users
+app.use('/projects', projectRoutes);//fully acess for loged in regie users
 
 
 /**

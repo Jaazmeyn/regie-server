@@ -4,11 +4,13 @@ html{
 body{
     background-image: url("../img/universal-studios.jpg");
     background-repeat: no-repeat;
-    background-attachment: fixed;}
+    background-attachment: fixed;
+    height: 100%;}
 main {
     margin:  0 auto;
     background-color: rgba(255,255,255,0.7);
     padding: 10px;
+    position: relative;
 }
 .footer{
     background-color: black;
@@ -71,6 +73,33 @@ table{
 }
 .logoutpage {
     background-color: black!important;
+}
+
+#projectlist{
+    display: flex;
+}
+#projectlist > div {
+    padding: 10px!important;
+
+}
+.meldung{
+    background-color:#5cb85c ;
+    position:inherit;
+    top:30px;
+    width: 100%;
+    height: 50px;
+    z-index: 1;
+    margin: auto 0;
+    text-align: center;
+}
+
+.loginbtn{
+    display: block;
+    position: inherit;
+    width:30%;
+    text-align: center;
+    margin: 0 auto;
+    top: 50px;
 }
 
 @media only screen and (max-width: 600px) {

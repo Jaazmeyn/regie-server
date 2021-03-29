@@ -57,13 +57,32 @@ REGISTRIERUNG
                 method: 'post', 
                 data: JSON.stringify(newTeamMember),//sende neuen registrierten um in json zu speichern
                 contentType:'application/json',
-                success:( req, res ) => { //wenn erfolgreich bekomme alle members
-                    let allTeammembers = req; 
-                    console.log(req, 'registersuccess')
-                    registrierung(req, allTeammembers, newTeamMember)
+                success:( res ) => { //wenn erfolgreich bekomme alle members
+                    //registrierung(req, allTeammembers, newTeamMember)
                     console.log(res, 'reponse')
+                    $('.cmVName').val(' '), 
+                        $('.cmNName').val(' '), 
+                    $('.cmMail').val(' '),
+                        $('.cmPassword').val(' '),
+                    $('.cmNumber').val(' '),
+                        $('#registerbtn').prop('disabled', false)
+                        .css({"background-color":"green"})
+                        $(' .row').html('<div>').addClass('meldung').html('erfolgreich registriert')
+                        $('<a>').addClass('btn btn-primary loginbtn').attr({'href':'login.html'}).html('login').appendTo('.meldung')
+                        
+                    
                     //ZU USERINTERFACE!! im /regie $(crewmembers..tbody each bekommt td und daneben button)
                     // registrierte user zu regie userinterface
+
+                    //$('form > input').val(' ');
+                    // $('form >  .was-validated')
+                    
+                    // .removeClass('.is-invalid, .form-control:invalid')
+                    // .addClass('.is-valid, .form-control:valid')
+        
+        
+        
+        
                 },
                 error:() => {
                     console.log('XHR ERROR')

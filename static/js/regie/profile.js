@@ -8,7 +8,7 @@ $.ajax({
 $('#bilduploader').on('submit', function(e){
     e.preventDefault();
     $.ajax({
-        url:'http://localhost:5001/upload',
+        url:'http://localhost:55555/upload',
         data:FormData,//file
         processData:false,
         contentType:false,

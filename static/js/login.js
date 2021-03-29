@@ -16,21 +16,20 @@ $('#loginbtn').on('click', function(e){
         data:JSON.stringify(login), //schick eingegebene daten an server
         contentType:'application/json',
         success:function( res ){ //ist user admin?
-            // console.log('checkmal ob vorhanden')
                 console.log(res, 'request json')
-                res = JSON.parse( res );
-            //  if(res.status == 'success'){
-                //res.redirect('../dashboard.html');
-                //console.log('success', res.body)
+                res = JSON.parse( res );        
                 let login = res.login;
                 console.log(login)
                 if (login == true){
                     //weiterleiten zu dashboard?
                     top.location.href="/dashboard";
-                } else {
+                    //top.location.href='/dashboard/:id';
+                } if(login == 'invited'){
+                    $('<div>').addClass('meldung').html('wenn Sie schon registriert sind, haben sie Zugang, sobald ihr berreich für ein projekt freigeschalten wurde. Die Info erhalten sie frühestmöglich per email').appendTo('#logininfo')
+                    console.log('not accepted to projectyet')
+                }else {
+                    $('<div>').addClass('meldung').html('not existing user').appendTo('#logininfo')
                     console.log('not existing user')
-                    top.location.href="/register";
-                    
                 }
         },//success
         error: function() {
