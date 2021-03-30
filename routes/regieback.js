@@ -41,7 +41,7 @@ router.post('/addMember', (req, res) => {
        //an frontend schicken
     })
     res.status(200)
-    .set({'Content-Type':'application/json' } )
+    .set({'Content-Type':'application/json' })
     .send(JSON.stringify({ message: "success"}))
 })
 
@@ -231,7 +231,10 @@ router.put('/projects/:id', (req, res)=>{
 })//ende put
 
 // usern projektId hinzufügen
-//Get User with this id 2 push project
+// Get User with this id 2 push project in user 
+// (nur wenn projektid noch nicht im user vorhanden -> ist vorhanden wenn userdiv im modal
+// entferne ich user muss die projektid { } wieder aus dem user entfernt werden
+// oder user berreits im div (bei wiederöffnen)oder div)
 
 router.post('/addusertoproject', (req,res)=>{
     // res.body.coosenmembers = obj aus userIdArr & FilmId
