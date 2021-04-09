@@ -13,7 +13,8 @@
                     "role":"admin", 
                     "permission":"admin", 
                     "job":"regisseur", 
-                    "zugriff":true
+                    "zugriff":true,
+                "contacts":["0.133104999222671206","0.93310499952671206", "0.13310490052671206"]
                 }, 
                 {
                     "FilmId":"Fila_cara filmo0.6956187846334407", 

@@ -1,5 +1,3 @@
-
-
 //_______________________________________________//
 //_______________________________________________//
 /////////////////// Project TAB ///////////////////
@@ -7,11 +5,12 @@
 
 
 let saveProjCount = 0;
-let Projecttitle, projectsId;
+let Projecttitle;
+//let projectsId;
 
 function makeFilmcards(data){
     data.projects.forEach(einzelnes => {
-        console.log(einzelnes)
+        //console.log(einzelnes,'jeder einzelne film)
         let filmTitile = einzelnes.title;
         let filmSynopsis = einzelnes.syn;
         let filmId = einzelnes.id;
@@ -21,8 +20,9 @@ function makeFilmcards(data){
         let html = `
         <img class="card-img-top" src="/uploads/images/titelbild1.jpeg" alt="Film img">
         <div class="card-body">
+            
             <h5 class="card-title">${filmTitile}</h5>
-            <p class="card-text synopsis">${ filmSynopsis }Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class=" synopsis">${ filmSynopsis }</p>
             <a class="btn btn-primary projectsettings">Project Settings</a>
         </div>`;
         
@@ -51,7 +51,11 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
         let clicked = this; //button
         let clickedElement = $(this).parent().parent() 
         let projectsId = $(clicked).parent().parent().data(); 
-        
+
+        let sendIdOfFilmForUsers = projectsId.filmid;
+        console.log(projectsId, sendIdOfFilmForUsers, 'projectsid aus click')
+
+
         let clickedTitle = $(clicked).parent().children().html()
         let clickedSyn = $(clicked).parent().children().next().html()
 
@@ -65,136 +69,137 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
         $('#newProjSynopsis').val(clickedSyn);
         $('#deleteProj').show();
         // div wo alle user deren filmid dessen entspricht
-        $('.choosenmembers').show();
+        $('.choosenmembers').html('');
 
-        //get users find in every user film in every film find this id take this userid pushe in array
-        let UsersOfProj = [];
-        //suche alle user mit der filmid!!!! und pushe in let UsersOfProj = [];
+        //all users mit der filmId (bei editproj onclick bestimmt)
+        let choosenmembers = []; //alle die bei save mitgeschickt werden
+
         $.ajax({
-            url:'/regie/crewmemberlist',
-            method:'get',
+            url:'/regie/memberofproj',
+            method:'get', //post filmid res = alle user, die filmid beinhalten
+            data:JSON.stringify(sendIdOfFilmForUsers),//BACKEND --> hole alle user mt der filmid 
+            contentType:'application/json',
             success:function(data){
-                data.crewMembers.forEach(function(member){ //eachmember
-                    //member.projectsId.find(function(filmId){
-                        //
-                        //UsersOfProj.push(member.id)
-                    //})
-                    member.projectsId.forEach(function(projectsofeachmember){ // [all projects ]
+                console.log(data, 'members of project')
+                //wenn membersofproj (rücksendunng )nicht emty, //[{username:name, userid:id},{username:name, userid:id}]
 
-                        let filmIdInProjofEachmember = projectsofeachmember.filmid; // {}{}{} each project id
-                        console.log(projectsofeachmember, 'projofeachmemb')
-                        //of filmidof memeber == same as onclick filmId
-                        //dann pushe in array bzw..
-                        if(filmIdInProjofEachmember == projectsId){
-                            console.log(member.id, 'this inside filmIdofEachmember', projectsId)
-                            //diese memberid die projectid beinhaltet
-                            //projectsofeachmember.rightId.parent
-                            UsersOfProj.push()
-                        }//end if projectId vorkommt
-                    })//ende foreach project in member
-                })//ende foreach member
-            },//ende success
+                if(data >= 0){
+                    //alle diese user in choosenmembers
+                    data.foreach(function(vorhandene){           
+                         choosenmembers.push(vorhandene)  //einzelner user {name, id}
+                    })
+                }
+            }, //ende success
             error:function(){
-                console.log('getuser 4 check filmid in Projectsettings XHR')
+                console.log('get memberoid of proj XHR')
             }
-        })//end ajax
-        // modal daten auslesen
-        // zu usern projektid fügen
+        })//end ajax 
+
+        if(choosenmembers >= 0){
+            let name = choosenmembers.name;
+            let id = choosenmembers.id;
+            //alle aus choosenmembers noch vorm savebutton ins div!!
+            appendmemberinDiv(name, id)
+        }
+
+        function appendmemberinDiv(name, id){
+            $('<div>')
+                .html(name)
+                .attr({"data-id":id})
+                .appendTo('.choosenmembers')
+                .on('click', function(){
+                    this.remove();
+                    // div wird entfernt, so bei save nicht mehr in den array gepusht, 
+                    //der in JSON dafür verantwortlich ist, dass diese user mit der ID die filminstanz bekommen
+                });
+        } 
+
+       
+
+        // modal beefüllen mit filmdaten
         function Memberselect(){ 
             $.ajax({ // projekt daten in den user unter projekte speichern
                     url: 'regie/crewmemberlist',
                     method: 'get',
                     success:function(data){
-                            //let allTeammembers =  {"crewMembers":[{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.33682613078290247","status":false},{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.5783424493750503","status":false}]};
-                            let html = `
-                                        <select class="custom-select" id="memberselect">
-                                        <option selected>Film Crew...</option>
-                                        </select>
-                                        <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary appendmemberinArr" type="button">Add Member</button>
-                                        </div>                                
-                                        `;
-                            $('.userselect').html(html);
-        
-                            data.crewMembers.map((einzelner) => {
-                                let vname = einzelner.vorname;
-                                $('<option>').val(einzelner.id).html(vname).appendTo('#memberselect')
-                                //console.log(einzelner.vorname)
-                            });
-                            console.log(data)
-                            // button neben user select (append user to div)
-                            function addMember(){
-                                $('.appendmemberinArr').on('click', function(){
+                        
+                        //let allTeammembers =  {"crewMembers":[{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.33682613078290247","status":false},{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.5783424493750503","status":false}]};
+                        let html = `
+                                    <select class="custom-select" id="memberselect">
+                                    <option selected>Film Crew...</option>
+                                    </select>
+                                    <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary appendmemberinDiv" type="button">Add Member</button>
+                                    </div>                                
+                                    `;
+                        $('.userselect').html(html);
+    
+                        data.crewMembers.forEach((einzelner) => {
+                            let vname = einzelner.vorname;
+                            $('<option>').val(einzelner.id).html(vname).appendTo('#memberselect')
+                            //console.log(einzelner.vorname)
+                        });
+                        console.log(data)
+
+
+                        // button neben user select (append user to div)
+                        function addMember(){
+                            $('.appendmemberinDiv').on('click', function(){
+                                //reset selected
+                                $(this).html('add')
+                                //finde den einen ausgewählten..
                                 
-                                    //reset selected
-                                    $(this).html('add')
-                                    //finde den einen ausgewählten..
-                                    
-                                    //selected auf neue option
-                                    //member und id aus imputfeld auslesen                       
-                                    let id = $('#memberselect option:selected').val();
-                                    let name = $('#memberselect option:selected').html();
-                                    console.log(id, name, 'füge attribut in ausgewählte memberdivs')
-                                    // als div unter button speichern
-        
-                                    //alle users die aus dem array wieder entfernt werden
-                                    let deletedUsersOfProj = [];
-        
-                                    $('<div>')
-                                            .html(name)
-                                            .attr({"data-id":id})
-                                            .appendTo('.choosenmembers')
-                                            .on('click', function(index){
-                                                this.remove();
-                                                let todelete = $(this).attr('data-id')
-                                                deletedUsersOfProj.push(todelete)
-                                                console.log(deletedUsersOfProj,'deleted')
-                                                //id mitgeben 
-                                                //checkBySave
-                                                //removeUserFromArray(id);
-                                                //hier data attr wieder entfernen
-                                            });
-                                            //console.log(choosenmembers, 'choosenmembers after splice')
+                                //selected auf neue option
+                                //member und id aus imputfeld auslesen                       
+                                let id = $('#memberselect option:selected').val();
+                                let name = $('#memberselect option:selected').html();
+                                console.log(id, name, 'füge in memberdivs')
+                                // als div unter button speichern
+    
+                                let Vorhanden = false;
+                                $('.choosenmembers div').each((j, div) => {
+                                    if($(div).attr("data-id") == id) {
+                                        Vorhanden = true;
+                                    } 
                                 })
-                            }//e addMember()
-                            addMember()
-                    },
+                                if(!Vorhanden){
+                                    console.log('Wurde noch nicht hinzugefügt')
+                                    appendmemberinDiv(name,id)
+                               
+                                } else {
+                                    console.log('user wurde schon hinzugefügt')
+                                }
+                            })//end appendmember in div
+                        }//e addMember()
+                        addMember()
+                    }, //ende success -> save projekt in user
                     error:_=>{
                         console.log('XHR getmembers for projectupdate')
                     }
             });//end ajax
         }// end Memberselect
-        Memberselect()
+        Memberselect(choosenmembers)
+        SaveChanges(choosenmembers)
 
-        //BUTTONS im modal
-        //save prj changes in modal
-        // im ProjectSettings() // Save Ajax Update JSON of project
-        function SaveChanges(projectsId){//Id von Projectsettings weil onclick auf einzelnen flm
-            // von delete: let projectsId = $('#projectlist').children().attr('data-filmid')
-            console.log(projectsId)
 
+        // savebutton im modal der ProjectSettings() aus onclick auf einzelnen flm
+        function SaveChanges(){
             $('#saveNewProject').on('click', function(e){
                 e.preventDefault();
-                $('#newProjModal').modal('hide')
-                
-                function choosenMember(){
-                    let choosenmembers = [];
+                $('#newProjModal').modal('hide');
+                choosenmembers = []//leereen
+                function updateChoosenmembers(){ // zu usern projektid fügen
                     // nur wenn im .coosenmembersdiv was drinnen ist -> update dessen user & sowiso proj
-                    // wenn nicht -> update nur proj
-                    if($('.choosenmembers').children().length > 0){ //wenn berreits user d proj vorhanden
+                    let members = $('.choosenmembers').children().length >= 0;
+                    console.log(members,'members true/false?')//true wenn 1ner hinzugefügt
+
+                    if(members){ //wenn berreits user d proj vorhanden
                         console.log('befüllt')
                         // 1. hole alle divs aus choosen member,
-                        $('.choosenmembers div').each(function(each){
-                            //wenn noch kein div mit diesem div vorhanden
-                            // schon divs drinnen?(wenn modal berreits offen 1person nur einmal in div fügen)
-                            //if(each != ){
-                            // lese data-id aus und pushe sie einzeln in array
-                            choosenmembers.push($(this).attr('data-id'));
-                        // } else {
-                            // console.log('user schon vorhanden')
-                            //}
-                        }); console.log( choosenmembers)
-
+                            $('.choosenmembers div').each((j, divcnames) => { //each braucht 2 parameter!!
+                                choosenmembers.push($(divcnames).attr('data-id'));    
+                            }); 
+                        console.log( choosenmembers, 'choosenmembers nach push of divnames') // wo ist undefined her??
 
                         let userUpdate = {
                             ids: choosenmembers,
@@ -202,7 +207,7 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                         } //console.log(projectsId, 'projectsid')
 
                         //AJAX post Array am server durchlaufen, alle personen == id projektid hinzufügen 
-                        function Project2Member(){ //eigene route
+                         //eigene route
                             //divtags nur dataids in aray -> schick ich mit
                             $.ajax({ //array von Ids möglich?
                                 url: '/regie/addusertoproject',
@@ -212,7 +217,7 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                                 contentType:'application/json',
                                 // dataType: 'json', 
                                 success:function(res){
-                                    console.log('post addusertoproject works')
+                                    console.log('post addusertoproject works', res)
                                 // UpdateProjectsInUser()  im success der
                                 },
                                 error:function(){
@@ -220,62 +225,49 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                                 }
                             // server foreach 
                             // personen finde eine mit der id und dort 
-                            }); //
-                        }//end update userprojects
-                        Project2Member();
-                        console.log(choosenmembers, 'coosenmember []')
-                        //immer wenn user weggeklickt im divonclick aufgerufen
-                        function removeUserFromArray(){
-                            //id des users wird mitgegeben
-                            choosenmembers.forEach(function(each, index){
-                                if(each == id){
-                                    console.log(each, id,'wenn die id die übergeben wurde mit einer im array übereinstimmt lösche')
-                                    let gefunden = indexOf(each);
-
-                                    choosenmembers.splice(gefunden);
-                                }
-                            })
-                        }//removeUserFromArray
+                            }); //                        
+                        //console.log(choosenmembers, 'added')
                     } else {
                         console.log('keine user hinzugefügt')
                     }
-                    function Projectupdate(){
-                        let projUpdate = {
-                            newtitle : $('#newProjectTitle').val(),
-                            newsyn: $('#newProjSynopsis').val(),
-                            //titelBild:$('.titelBild').val(),
-                        };
-                        projectsId = projectsId.filmid;
-                        
-                        $.ajax({
-                            url:'/regie/projects/' + projectsId,
-                            method:'put',
-                            data:JSON.stringify(projUpdate),
-                            contentType: 'application/json',
-                            success:function(res){
-                                console.log('film was updated')
-                                //UpdateProjectsInUser()///!!!
-                                
-                            },
-                            error:function(){
-                                console.log('aenderungen konnten nicht gespeichert werden')
-                            }
-                        })
-                            // // alle 'ausgelesen ids aus selects';
-                            // let crewmembersval = $('#coosenmembers').val();//membersid  
-                            // crewmembers = [crewmembersval];
-                            // crewmembers.push()
-                            // crewmembers.forEach(element => {
-                            // });
-                    }//ende projupdate
-                    Projectupdate();
-                }
-                choosenMember()
+                }//ende choosen member
+                updateChoosenmembers(choosenmembers)
+                
+                // UPDATE FILM DB
+                function Projectupdate(){
+                    let projUpdate = {
+                        newtitle : $('#newProjectTitle').val(),
+                        newsyn: $('#newProjSynopsis').val(),
+                        //titelBild:$('.titelBild').val(),
+                    };
+                    updateProjId = projectsId.filmid;   //projectsId sollte nur projects heißen filmId ist   
+                    console.log(updateProjId,'updateProjId')
+                    $.ajax({
+                        url:'/regie/projects/' + updateProjId, //2projids?
+                        method:'put',
+                        data:JSON.stringify(projUpdate),
+                        contentType: 'application/json',
+                        success:function(res){
+                            console.log('film was updated') 
+                            // var windoeandTab = widow.open('http://localhost:5555/regie', 'pills-project') ;
+                            // windoeandTab.location.reload(true);
+                            // location.reload();
+                            // window.location.reload(true)
+                            //Location.reload(forcedReload: true);
+                            //location.load(true) 
+                            console.log(res) //updated projectid
+                        },
+                        error:function(){
+                            console.log('aenderungen konnten nicht gespeichert werden')
+                        }
+                    })//ende ajax
+                }//ende projupdate
+                Projectupdate();
+
             })//end onclick
         }//end updateProj
-        SaveChanges(projectsId);
+        //SaveChanges(projectsId, choosenmembers);
         DeleteProject(clickedElement)//wenn on click
-
     })// ende projectsettings
 }//ende changeproj
 
@@ -293,7 +285,22 @@ function DeleteProject(clickedElement){
                 console.log('server erfolgreich')
                 $('#newProjModal').modal('hide');
                 $(clickedElement).remove()
-                //reload page
+
+                // remove gesammte projektinstanz aus dem user!!
+                function removeProjectinstance(){
+                    $.ajax({ //enferne allen usern die zu löschende projektid
+                        url:'/regie/delprojusers/' + projectsId,
+                        method:'delete',
+                        success:function(res){
+                            console.log('server erfolgreich del projinstance')
+                        },
+                        error:function(){
+                            console.log('server fehlgeschlagen del projinstance')
+                        }      
+                    })//ende ajax
+                }//ende    removeProjectinstance() 
+                removeProjectinstance(projectsId)
+                // reload page
             },error:function(){
                 console.log('löschen XHR projekt')                
             }
@@ -318,7 +325,7 @@ function getProjects(){// success: makeFilmcards() & ProjectSettings()
     })//ende fill filmcards
 }
 getProjects() 
-
+    
 function NewProject(){
     $('#createNewProj').on('click', function(e){
         $('#newProjModal').modal('show');

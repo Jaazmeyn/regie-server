@@ -21,14 +21,14 @@
           <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"> <i class="fa fa-user"></i>Profile</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="true"><i class="fa fa-users"></i>Contacts</a>
+          <a class="nav-link hideforusers" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="true"><i class="fa fa-users"></i>Contacts</a>
         </li>
           <li class="nav-item">
-            <a class="nav-link active" id="pills-project-tab" data-toggle="pill" href="#pills-project" role="tab" aria-controls="pills-project" aria-selected="false">Projects</a>
+            <a class="nav-link active hideforusers" id="pills-project-tab" data-toggle="pill" href="#pills-project" role="tab" aria-controls="pills-project" aria-selected="false">Projects</a>
           </li>
-          <li class="nav-item">
-            <a title="currentProj"class="nav-link" id="pills-currentProj-tab" data-toggle="pill" href="#pills-currentProj" role="tab" aria-controls="pills-currentProj" aria-selected="false">currentProj</a>
-          </li>
+          <!-- <li class="nav-item">
+            <a title="currentProj"class="nav-link currentproject" id="pills-currentProj-tab" data-toggle="pill" href="#pills-currentProj" role="tab" aria-controls="pills-currentProj" aria-selected="false">currentProj</a>
+          </li> -->
           <li class="nav-item">
             <a title="log out"class="nav-link" id="pills-logout-tab" data-toggle="pill" href="login.html" role="tab" aria-controls="pills-logout" aria-selected="false"><i class="fa fa-power-off"></i> </a>
           </li>
@@ -44,14 +44,14 @@
                               <img src="" id="profilbild" alt="" class="rounded shadow">
                             </div>
                             <img src="./img/profilbild.png" alt="" class="profilbild ">
-                            <h2>Hello Director!</h2>
+                            <h2>Hello <span class="loggedinName">You!</span></h2>
                           </div>
                           <!-- bilduploat mit form data -->
                           <form action="/upload" id="bilduploader" method="POST" enctype="multipart/form-data">
                             <input type="file" class="form-control" accept=""image="image/*" name="photo">
                             <input type="submit" class="btn btn-info mt-3" value="upload">
                           </form>
-                            <p id="regiename">your Name</p>
+                            <div id ="ProjNews"></div>
                           </div>
         </div>
         <div class="tab-pane fade " id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
@@ -211,8 +211,10 @@
 <script src="./js/regiefront.js"></script>
 <script src="./js/regie/project.js"></script>
 <script src="./js/regie/contacts.js"></script>
+<script src="./js/regie/loggedin.js"></script>
 
 
-<script src="../../static/js/regie/profile.js"></script>
+
+<!-- <script src="../../static/js/regie/profile.js"></script> -->
 </body>
 </html>

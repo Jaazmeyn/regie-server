@@ -2,59 +2,106 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');//um auf datein zugreifen
 const bodyParser = require( 'body-parser' );
-router.use( bodyParser.json() );//um daten aus body auslesen zu können
-const $ = jQuery = require('jquery');
 
+router.use( bodyParser.urlencoded({
+    extended:true 
+}));//um daten aus body auslesen zu können
+router.use( bodyParser.json() );
+const $ = jQuery = require('jquery');
 const CrewFile = __dirname + '/../model/data/crew.json';
 
+// const { v4: uuidv4 } = require('uuid');
+// uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
+
+
+const redirectHome = (req,res,next)=>{
+    const userid = req.session.userId;
+    if(req.session.userId){
+        //if(userId == 'regisseuraccount'){
+            //res.redirect('/regie')
+        //} else {
+            res.redirect('/dashboard')
+        //}
+    } else {
+        next()
+    }
+}
 
 //wenn eingabe im browser auf login
-router.get('/', (req, res) => {
+router.get('/', redirectHome, (req, res) => {
+
+    //req.session.userId = 
+
     //res.redirect('login.html');
     res.sendFile(__dirname + '/templates/login.html')
 })
 //login
 router.post('/', (req, res) => {//vom frontend to server gesendet
+    console.log(res.body, req.body)
+    //console.log(JSON.parse(req))
     let login = {
         email: req.body.email,
         password: req.body.password,
     }
+    let uservorhanden = false;
     console.log('postrequest kommt an',login);
     //speicher registrierten in JSON file
     fs.readFile(CrewFile, (err, data) => { //JSON lesen -> eingetragene user auslesen
         if(!err){
             data = JSON.parse(data); /* all users */ 
            // console.log(data)
-            let checklogin = false;
+            let loginuserstatus = false;
+            let candidate;
             // existing user returnt true oder false
-            data.crewMembers.forEach(e => { //aus file einzelne mail
+            for(let e of data.crewMembers){
+            // data.crewMembers.forEach(e => { //aus file einzelne mail
                // console.log(e.email, e.status, 'im map einzelner loginversuch')
-                let vorhanden = e.email == login.email && e.password == login.password;
-                console.log(vorhanden, e, e.email, login.email, e.password, login.password)
-                if(vorhanden){ //user gibts!
-                    //wird hier noch dieser user abgeprüft?
-                   // console.log('vorhandener user, status=',e.status)
-                    if(e.status == true){
-                        checklogin = true;
-                        //seccoin setzen(userid)
-                        console.log('login true')
-                        //spei  token////id seccion 
-                        let loginId = e.id;
+                let vorhanden = e.email == login.email && e.password == login.password; //hash password                
+                if(vorhanden){ //wird bei jedem einzelnen user gecheckt -> true/false
+                 uservorhanden = true;
+                    candidate = e;//vorhandenen user abspeichern
+                    console.log('user mit login true=',e)
+                    break;//aufhören zu loopen -> nimmt dann nicht immer den letzten sondern der true ist
+                }
+            }  //ende forloop
+
+            if(uservorhanden){ //wurde variable gesetzt ist user gefunden und in candidate von einzelnen usern d JSON abgespeichert
+                    //loginberechtigt->
+                    console.log(candidate.status, 'candidate.status')
+                    if(candidate.status){ //candidate ist einzelner der existiert
+                        loginuserstatus = true;
+                        //console.log('login true')
+
+                        // speicher secciontoken mit der userId  -- seccion des users gesetzt(userid)
+
+                        req.session.userId = candidate.id;//oder mit uuid
+                        console.log(candidate.id, 'set userid on the seccion object*****')
+
+                        let loginId = candidate.id;
                         console.log(loginId)
                         //id: individuelles dashboard weiterleiten
-                        //router.use('/' + loginId, individual)
-                    } else if(e.status == false){
+                        var userProjects = candidate.projectsId.filter(function (e) {
+                            return e.role == 'user'
+                        });
+                        let loginUser = {
+                            login:true, userId: candidate.id, username: candidate.vorname, projects:userProjects
+                        }
+                        res.status(200)
+                            .end( JSON.stringify(/*seccionId: uuid,*/ loginUser));
+                        //get ()
+                    } else {
                         //login = false;
-                        console.log('nicht freigeschalten')
+                        console.log('nicht freigeschalten aber kommt vor')
+                        loginuserstatus = false;
+                        res.status(400)
+                            .end( 'not allowed');
                     } //end if vorhanden
-                //user kommt nicht vor
-                } else { 
-                    //login = false;
-                    console.log('kommt nicht vor')
-                }
-            })  
-            res.status(200)
-                .end( JSON.stringify({login: checklogin}));
+                   
+            } else { 
+                console.log('user nicht vorhanden')
+            }
+            console.log(loginuserstatus)
+            
 
         }//ende readfile(!err)
         else { // readfile(err)
