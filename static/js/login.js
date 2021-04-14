@@ -1,7 +1,5 @@
-/**
- * LOGIN
- */
 sessionStorage.clear();
+
 $('#loginbtn').on('click', function(e){
     e.preventDefault(); 
     console.log('loginclick')
@@ -10,7 +8,6 @@ $('#loginbtn').on('click', function(e){
         email:$('.loginname').val(), 
         password:$('.loginPasswort').val(),
     }
-    //console.log(login)
     $.ajax({ //schicke userdater vom Server 
         url: '/login',
         method: 'post',
@@ -22,17 +19,13 @@ $('#loginbtn').on('click', function(e){
                 userId =  res.userId;
                 let login = res.login;
                 console.log(login)
-                if (login == true){                    
+                if (login == true){   
+                    //setze seccion                
                     sessionStorage.setItem('user', JSON.stringify(res));
                     top.location.href="/regie";
-
-                    //top.location.href='/dashboard/:id';
-                } else if (login == 'invited'){
-                    $('<div>').addClass('meldung').html('wenn Sie schon registriert sind, haben sie Zugang, sobald ihr berreich für ein projekt freigeschalten wurde. Die Info erhalten sie frühestmöglich per email').appendTo('#logininfo')
-                    console.log('not accepted to projectyet')
                 } else {
-                    $('<div>').addClass('meldung').html('not existing user').appendTo('#logininfo')
-                    console.log('regisseur')
+                    sessionStorage.clear();
+                    top.location.href="/login";
                 }
         },//success
         error: function() {

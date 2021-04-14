@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');//um auf datein zugreifen
 const bodyParser = require( 'body-parser' );
-router.use( bodyParser.json() );//um daten aus body auslesen zu können
+
+//router.use( bodyParser.json() );//um daten aus body auslesen zu können
+router.use( bodyParser.urlencoded({
+    extended:true 
+}));//um daten aus body auslesen zu können
+
+router.use( bodyParser.json() );
 
 /**
  * crewmember  -- endpoint '/crew'
@@ -10,8 +16,9 @@ router.use( bodyParser.json() );//um daten aus body auslesen zu können
  */    
 const CrewFile = __dirname + '/../model/data/crew.json';
 
+
 router.get('/', (req, res) => {
-    res.sendFile(__dirname + '/templates/register.html');
+    res.sendFile(__dirname + '/templates/register.html')
 })
 //main.js (ajax) sendet user im body mit
 router.post('/', (req, res) => {//neuer user vom frontend gesendet

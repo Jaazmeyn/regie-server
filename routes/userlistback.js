@@ -3,10 +3,6 @@ const router = express.Router();
 const fs = require('fs');//um auf datein zugreifen
 const bodyParser = require( 'body-parser' );
 const { json } = require('body-parser');
-const { each } = require('jquery');
-const { regiepermission } = require('./auth')
-const { redirectHome } = require('./auth')
-//const { projects } = require('./projectsbck')
 const projectRoute = require('./projectsbck')
 router.use( bodyParser.json() );//um daten aus body auslesen zu können
 //const regieprofile = require('./regie/regieprofilebck.js')
@@ -17,7 +13,7 @@ const CrewFile = __dirname + '/../model/data/crew.json';
 
 
 //GET ALL USERS
-router.get('/', redirectHome, (req, res) => {
+router.get('/', (req, res) => {
     res.sendFile(__dirname + '/templates/regie.html');
 })
 //ADD NEW USER 
@@ -138,9 +134,8 @@ router.delete('/crewmemberlist/:id' , (req, res) => { //by query not body
             data = JSON.parse(data)//weil ich weiterarbeiten will in js obj
             data.crewMembers.forEach(function(one, index ){
                 if ( one.id == userId.id ) {
-                    
                     data.crewMembers.splice( index, 1);
-                     console.log(index,'todelete')
+                    console.log(index,'todelete')
                     //data.crewMembers.splice(data.crewMembers[index], index)
                 }//end if
             })

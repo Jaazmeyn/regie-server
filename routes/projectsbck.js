@@ -3,9 +3,11 @@ const router = express.Router();
 const fs = require('fs');//um auf datein zugreifen
 const bodyParser = require( 'body-parser' );
 const { json } = require('body-parser');
+router.use( bodyParser.urlencoded({
+    extended:true 
+}));//um daten aus body auslesen zu können
 router.use( bodyParser.json() );//um daten aus body auslesen zu können
-
-
+router.use(express.json());
 
 const ProjectDB = __dirname + '/../model/data/projects.json';
 const CrewFile = __dirname + '/../model/data/crew.json';
@@ -71,7 +73,6 @@ router.put('/projects/:id', (req, res)=>{
                 if ( one.id == projectId.id ) {
                     data.projects[index].title = req.body.newtitle;
                     data.projects[index].syn = req.body.newsyn;
-                    //data.projects[index].pfad = req.body.titelBild;
                 }
             })//end foreach
             fs.writeFile(ProjectDB, JSON.stringify(data), (err)=>{
@@ -99,61 +100,52 @@ router.put('/projects/:id', (req, res)=>{
 
 
 // bekomme alle user eines bestimmten projekts
-router.get('/memberofproj', (req,res) => {
+router.post('/memberofproj', (req,res) => {
     //frontend sendet vom editprojclick filmId mit
-    let projectsId = req.body;//warum ist das emty?? !!!!!!-!!!__!_!_!__!_!
-    console.log(projectsId, 'projectsId')
-    //wenn geht durch projectsId ersetzen
-    let notemtyArrFromfront = "Fila_car_filmo0.6956187846334407";
-    let choosenMembers = [];
+    let projectsId = req.body;
+    let choosenMembers = []; //{vorname:'elga',id:3},
 
     fs.readFile(CrewFile, (err, data)=> {
         if(!err){
         data = JSON.parse(data);
-        //finde user mit dieser filmid und pushe sie in den array zum vergleich für add/remove user 
-        data.crewMembers.filter(member => { //all users
-           iterateObject(member);
-        });//ende find
 
-
-        function iterateObject(obj){//durch jedes objekt/user
-            for(prop in obj){ //gehe jede property durch
-
-                //wenn eine property ein objekt ist
-                if(typeof(obj[prop]) == "object"){ 
-                    iterateObject(obj[prop]);//gehe durch dieses wieder durch und betrachte elemente als wären sie auf gelicher ebene
-                } else {//wenn keine property ein objekt ist.. und die iteration done ->
-                    if(prop == "filmid"){// ..wenn property filmid ist, user hat filme
-                        console.log(`user hat filme`)
-
-                        if(obj[prop] == notemtyArrFromfront){//wenn geht durch projectsId ersetzen!
-                            console.log(`user hat ausgewählten film`)
-
-                            //wie kann ich den der zutrifft ansprechen???? obj[prop].vorname geht nicht,obj[vorname], prop[vorname], prop["vorname"], let choosenVN = obj[prop] == "vorname"/false/true
-                            let choosenVN = obj[prop] == "vorname";
-                            // ich bin in einem layer drinnen oder? wie komm ich da wieder raus?
-                            console.log(choosenVN, 'user')
-
-                                let UserInfo = { //property : val
-                                    vorname: obj[prop] = obj.prop, //member with this projectId
-                                    //id: obj[projectsId].prop == "id", // dessen if == true userid ------!!!!!!!!!!!!!!!!!!!!!
-                                 };
-                                 console.log(UserInfo, 'Userinfo')
-                                 //bring in den arr
-                                 choosenMembers.push(UserInfo)
-                        } else {
-                            console.log(`user hat keine filme`)
+            for(member of data.crewMembers){
+                if(hasFilmId(member)){
+                    // console.log(member.vorname, 'vorname')
+                    // console.log(member.id, 'id')
+                    let UserInfo = { //property : val
+                        vorname: member.vorname, //member with this projectId
+                        id: member.id, 
+                    };
+                    //console.log(UserInfo,choosenVN, 'Userinfo')
+                    //bring in den arr
+                    choosenMembers.push(UserInfo)
+                }
+            }
+               
+            function hasFilmId(member){//durch jedes memberekt/user
+                //console.log(member)
+                for(prop in member){ //gehe jede property durch -> wenn object
+                    if(typeof(member[prop]) == "object"){ 
+                        if (hasFilmId(member[prop])){
+                            return true;
+                        };//gehe durch dieses wieder durch und betrachte elemente als wären sie auf gelicher ebene
+                    } else {//wenn keine property ein memberekt ist.. und die iteration done ->
+                        if(prop == "filmid"){// user hat generell filme
+                            if(member[prop] == projectsId.filmid){
+                                return true;
+                            } 
                         }
-                    }//end filmid
-                }//endelse
-            }//endfor 
-        }//iterate
-        console.log(choosenMembers)
+                    }//endelse
+                }//endfor 
+            }//iterate
+        console.log(choosenMembers, 'z143')
         res.status(200)
             .set({'Content-Type':'application/json' })
             .send(JSON.stringify(choosenMembers))
-        } else{
-            console.log('user auslesen fehlgeschlagen')
+        } else {
+            res.status(404)
+                .message('user auslesen fehlgeschlagen')
         }
     })//end read
 })
@@ -169,77 +161,85 @@ router.get('/memberofproj', (req,res) => {
 router.post('/addusertoproject', (req,res) => {
     // res.body.coosenmembers = obj aus userIdArr & FilmId
     console.log('user2proj req kommt an')
-    let filmId = req.body.filmId;
+    let filmId = req.body.filmId.filmid;
     let Choosenmembers = req.body.ids; 
-    console.log(Choosenmembers, filmId.filmid, 'object w arr and filmid')
+    console.log(Choosenmembers,'Choosenmembers')
+    console.log(filmId, 'filmId')
+    let deleteprojinmember = false;
 
-    fs.readFile(CrewFile, (err, data)=>{
+    fs.readFile(CrewFile, (err, data) => {
         if(!err){
             data = JSON.parse(data);            
             console.log('readfile 2 push proj')
-            //console.log(filmId, data, '= crewmembers')
-            let memberofProj = [];
 
-            data.crewMembers.forEach(function(crew){
-               //console.log(crew.id )
-                // User id im Choosemebers?
-                console.log(`mitgeschickt? ${Choosenmembers.indexOf( crew.id )  > 0}`,crew.id)
-                //console.log(crew.id[Choosenmembers.indexOf( crew.id )  > 0])
-                //console.log(crew.id,'every id')
+            //Member JSON durchschauen
+            for(user of data.crewMembers){
+                //console.log(user.projectsId, '=user.projectId')
 
-                //mitgeschickte crewids?
-                 if(Choosenmembers.indexOf( crew.id )  >= 0){ 
-                    //console.log(crew.id, 'nur mitgeschickte id') -> funktioniert
-                    
-                    
-                    // 3. filmids in projekten vorhanden?
-                    crew.projectsId.forEach(function(each){
-                        console.log(each.filmid, 'schleife richtig?')
-                        if(!filmId){
-                            // wenn nein hintzufügen +
-                            console.log('filmid ist im crewfile noch nicht vorhanden push')
+                // mitgeschickter einzelner User aus choosenmembersarray im JSON enthalten?
+                let userMitgeschickt = Choosenmembers.indexOf( user.id )  >= 0;
+                    // console.log(user.vorname,'mitgeschickt ', userMitgeschickt, 'hasfilmid',hasFilmId(user) ? true:false)
+                    if(hasFilmId(user)){ //funktioniert nicht hasFilmId ist immer false carlo hat aber projekt
+                        if(!userMitgeschickt){
+                            // data.projectsId.forEach(function(one, index ){
+                            // data.crewmembers.splice( user.projectsId, data.crewmembers[user]);
+                            // deleteprojinmember = true;
+                            // hasFilmId(deleteprojinmember)//lösche filmId[filmid] filmId des users mit der property der FilmId
 
-                            filmId = filmId.filmid;
+                        } else {
+                            console.log(user.vorname,'nix tun')//funktioniert nicht
+                        }
+                    //console.log(user.vorname,'user wurde mitgesendet hat projekt schon')
+                    } else {
+                        if(userMitgeschickt){
+                            console.log(user.vorname, 'push proj') //funktioniert
                             let filmobject = {
-                                "filmid":filmId,   
-                                "role":"user", 
-                                "permission":[{
-                                    "newsfeed":"read", 
-                                    "message":"direct", 
-                                    "contacts":{"main":"read"}
-                                    }], 
-                                "job":"member", 
-                                "zugriff":true}
-                          
-                            // memberofProj.push(filmId,{"permission":"member"})//jedem aus div ids
-                            memberofProj.push(filmobject)//jedem aus div ids
-                        } else {
-                            console.log('filmid berreits vorhanden')
-                        }
-                    })//ende forEach
-                 } else { // wenn user nicht im JSON vorhanden
-                    crew.projectsId.forEach(function(who){
-                        //schauen ob er filmid hat
-                        if(filmId){
-                            // wenn ja entfernen -
-                            data.projects.forEach(function(one, index ){
-                                if ( one.id == projectId.id ) {
-                                    console.log(index,'todelete')
-                                    
-                                    data.projects.splice( index, 1);
-                                }//end-if
-                            })//end foreach
-                            //wie spreche ich dies an?
-                            //who ist 1film
-                            console.log(who, 'filmid vorhanden aber nicht mehr mitgeschickt -> delete filmId in person')
+                                    "filmid":filmId,   
+                                    "role":"user", 
+                                    "permission":[{
+                                        "newsfeed":"read", 
+                                        "message":"direct", 
+                                        "contacts":{"main":"read"}
+                                        }], 
+                                    "job":"member", 
+                                    "zugriff":true
+                                }
+                            user.projectsId.push(filmobject)
 
-                        } else {
-                            console.log('filmid berreits vorhanden nichts tun')
-                        }
-                    })//endeach
-                }//endelse
-            })
+                        } else{
+                            // console.log(user.vorname,'nix tun user nicht mitgeschickt unten')//funktioniert
+                        } 
+                    }
+            }
 
+           
+            function hasFilmId(member, deleteprojinmember){//durch jedes memberekt/user
+                //console.log(member)
+                for(prop in member){ //gehe jede property durch -> wenn object
+                    // console.log(typeof(member[prop]), 'typeof') --> works
+                    if(typeof(member[prop]) == "object"){ 
+                            //console.log(hasFilmId(member[prop]) ? true:false, typeof(member[prop]) ? true:false,'hasFilmId(member[prop]')
+                        if (hasFilmId(member[prop])){ 
+                            // console.log(member[prop], 'member[prop]??????? = leerer array wenn kein obj')
+                            return true;
+                        };//gehe durch dieses wieder durch und betrachte elemente als wären sie auf gelicher ebene
+                    } else {//wenn keine property ein memberekt ist.. und die iteration done ->
+                        if(prop == "filmid"){// user hat generell filme
+                            if(member[prop] == filmId){
+                                console.log(data.crewMembers, member,'splice??????? this<ßßß')
+
+                                if (deleteprojinmember == true){
+                                    delete member;
+                                    console.log('deleted')
+                                }
+                                return true;
+                            } 
+                        }
+                    }//endelse
+                }//endfor 
+            }//iterate
+
+            
             fs.writeFile(CrewFile, (JSON.stringify(data)),(err)=>{
                 if(!err){
                     res.status(200)
@@ -253,8 +253,6 @@ router.post('/addusertoproject', (req,res) => {
         }
     })//end readfile
 })
-
-
 
 
 // PROJECTS
@@ -284,33 +282,5 @@ router.delete('/projects/:id', (req, res)=>{
     })//end readfile
     
 })//end delete
-
-
-// // lösche alle user dieses Projekts(wenn projekt gelöscht wird)
-// let todeleteusersofspecificProj;
-// router.delete('/delprojusers/:id',(req, res) => {
-//     const todeletId = req.query;
-//     fs.readFile(crewMembers, (err, data)=>{
-//         if(!err){
-//         // alle members nach der zu löschenden projektId durchsuchen
-//         data = JSON.parse(data);
-//         todeleteusersofspecificProj = data.crewMembers.forEach(each).find( _=> {
-//             each.projectId == todeletId;
-//             // console.log(crewMembers)
-//             //  if(each == projectId){
-
-//             //     console.log(each, id,'wenn die id die übergeben wurde mit einer im array übereinstimmt lösche')
-//             //     let gefunden = indexOf(each);
-//             //     choosenmembers.splice(gefunden);
-//             // }
-//         })
-//     } else {
-//         console.log('lesefehler')
-//     }
-//         console.log(todeleteusersofspecificProj,'todelete')
-//     })//ende fs  
-// })
-// //console.log(todelete,'todelete projektinstanz(gesammtes Ojekt im projectId des Users, der Projekt beinhaltet)')
-
 
 module.exports = router;

@@ -10,32 +10,12 @@ router.use( bodyParser.json() );
 const $ = jQuery = require('jquery');
 const CrewFile = __dirname + '/../model/data/crew.json';
 
-// const { v4: uuidv4 } = require('uuid');
-// uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
-
-
-const redirectHome = (req,res,next)=>{
-    const userid = req.session.userId;
-    if(req.session.userId){
-        //if(userId == 'regisseuraccount'){
-            //res.redirect('/regie')
-        //} else {
-            res.redirect('/dashboard')
-        //}
-    } else {
-        next()
-    }
-}
-
-//wenn eingabe im browser auf login
-router.get('/', redirectHome, (req, res) => {
-
-    //req.session.userId = 
-
-    //res.redirect('login.html');
+// wenn eingabe im browser auf login
+router.get('/', (req, res) => {
     res.sendFile(__dirname + '/templates/login.html')
 })
-//login
+
+// login
 router.post('/', (req, res) => {//vom frontend to server gesendet
     console.log(res.body, req.body)
     //console.log(JSON.parse(req))
@@ -67,24 +47,25 @@ router.post('/', (req, res) => {//vom frontend to server gesendet
 
             if(uservorhanden){ //wurde variable gesetzt ist user gefunden und in candidate von einzelnen usern d JSON abgespeichert
                     //loginberechtigt->
-                    console.log(candidate.status, 'candidate.status')
+                    console.log('candidate.status=', candidate.status)
                     if(candidate.status){ //candidate ist einzelner der existiert
                         loginuserstatus = true;
-                        //console.log('login true')
-
-                        // speicher secciontoken mit der userId  -- seccion des users gesetzt(userid)
-
-                        req.session.userId = candidate.id;//oder mit uuid
-                        console.log(candidate.id, 'set userid on the seccion object*****')
-
-                        let loginId = candidate.id;
-                        console.log(loginId)
+                        console.log(candidate.id, 'login')
                         //id: individuelles dashboard weiterleiten
-                        var userProjects = candidate.projectsId.filter(function (e) {
+
+                        //ist er admin?
+                        let admin = candidate.projectsId.filter(function (e) {
                             return e.role == 'user'
                         });
+                        console.log(admin,'admin')
+                        
                         let loginUser = {
-                            login:true, userId: candidate.id, username: candidate.vorname, projects:userProjects
+                            login:true, 
+                            userId: candidate.id, 
+                            username: candidate.vorname, 
+                            projects: candidate.projectsId, 
+                            projektadmin: admin
+                            
                         }
                         res.status(200)
                             .end( JSON.stringify(/*seccionId: uuid,*/ loginUser));

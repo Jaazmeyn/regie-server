@@ -1,21 +1,16 @@
-//_______________________________________________//
-//_______________________________________________//
-/////////////////// Project TAB ///////////////////
-//_______________________________________________//
-
+var user = sessionStorage.getItem('user');
+user = JSON.parse(user);
 
 let saveProjCount = 0;
 let Projecttitle;
 //let projectsId;
 
-function makeFilmcards(data){
-    data.projects.forEach(einzelnes => {
+function makeFilmcards(projects){
+    projects.forEach(einzelnes => { //data = data.project
         //console.log(einzelnes,'jeder einzelne film)
         let filmTitile = einzelnes.title;
         let filmSynopsis = einzelnes.syn;
         let filmId = einzelnes.id;
-        //"img":"titelbild1.jpeg"
-        let img = einzelnes.img;
 
         let html = `
         <img class="card-img-top" src="/uploads/images/titelbild1.jpeg" alt="Film img">
@@ -23,7 +18,9 @@ function makeFilmcards(data){
             
             <h5 class="card-title">${filmTitile}</h5>
             <p class=" synopsis">${ filmSynopsis }</p>
+            <div class="onlyadmin"></div>
             <a class="btn btn-primary projectsettings">Project Settings</a>
+
         </div>`;
         
         $('<div>').html(html).attr({
@@ -32,16 +29,97 @@ function makeFilmcards(data){
             "style":"width: 18rem",
         }).appendTo('#projectlist')
     })
-    if(data.projects != 0){
-        $('#current-projectTitle').html('current project: '+ data.projects[0].title)
+    if(projects != 0){
+        $('#current-projectTitle').html('current project: '+ projects[0].title)
         $('#createpro').html('create a new one')
     }
 }//end make filmcards
 
 
-/////////////////// SETTINGS MODAL //////////////////////
 
-//Edit Proj --> modal opens projectuser loading
+function Projects(){ // success: makeFilmcards() & ProjectSettings()
+    if(user.projects.length > 0){ //session user hat projekte
+        if(user.projects[0].role == 'admin'){   //session user ist admin: hat alle projekte
+            $.ajax({ 
+                url:'regie/projects',
+                method:'get',
+                contentType:'application/json',
+                success:function(data){
+                    //1card/film
+                    data = JSON.parse(data)
+                    projects = data.projects;
+                    makeFilmcards(projects)
+                    ProjectSettings()
+                },//end success
+                error:function(){
+                    console.log('XHR error get filmlist')
+                }
+            })//ende fill filmcards regie
+        } else { //user
+            // nur Projekte des users rendern
+            $('.projectsettings').hide();           
+            $.ajax({ 
+                url:'regie/projects', //hole alle projekte
+                method:'get',
+                contentType:'application/json',
+                success:function(data){ 
+                    //1card/film
+                    data = JSON.parse(data)
+                    let userprojektids;
+                    let projects = [];
+                    if(user.projects.length > 1){ // user hat projekte
+                        //userprojektids
+                        user.projects.filter(item => {
+                            iterateObj(item);
+                        })
+                        //alle user projekte
+                        //user filmid in array als variable
+                        function iterateObj(obj, prop){
+                            for(prop in obj ){
+                                if(typeof(obj[prop]) == "object"){
+                                    iterateObj(obj[prop]);
+                                } else {
+                                    if(prop == "filmid"){ //ende wenn kein obj mehr prop is
+                                        userprojektids = obj[prop];
+                                        data.projects.forEach(eachpr => {//alle proj
+                                            if(eachpr.id == userprojektids){
+                                                //jedes Proj als obj
+                                                projects.push(eachpr)
+                                            }
+                                        })
+                                    }//end if filmid
+                                }//end else
+                            } //end for in
+                        }//iterate
+                        console.log(projects,'userprojektids', data)
+                    } else { //wenn user nur einen film hat
+                        userprojektids = user.projects[0].filmid;
+                        data.projects.forEach(oneproj => { //alle projekte durch und selben wie d users finden
+                            if(oneproj.id == userprojektids){
+                                //jedes Proj als obj
+                                projects.push(oneproj)
+                            }
+                        })
+                        console.log(projects)
+                    }
+                    console.log(data, 'data')
+                    makeFilmcards(projects)
+                   
+                },//end success
+                error:function(){
+                    console.log('XHR error get filmlist')
+                }
+            })//ende fill filmcards user
+        };
+    } else {
+        console.log('user hat keine projekte')
+
+    };
+} Projects() 
+// Edit Proj --> modal opens projectuser loading
+
+
+////////////// SETTINGS MODAL ////////////////////
 function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
     $('.projectsettings').on('click', function(e){
         e.preventDefault();
@@ -51,10 +129,8 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
         let clicked = this; //button
         let clickedElement = $(this).parent().parent() 
         let projectsId = $(clicked).parent().parent().data(); 
-
-        let sendIdOfFilmForUsers = projectsId.filmid;
-        console.log(projectsId, sendIdOfFilmForUsers, 'projectsid aus click')
-
+  
+        let sendIdOfFilmForUsers = projectsId; //funktioniert
 
         let clickedTitle = $(clicked).parent().children().html()
         let clickedSyn = $(clicked).parent().children().next().html()
@@ -66,42 +142,44 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
         $('#saveNewProject').html('Save changes');
 
         $('#newProjectTitle').val(clickedTitle);
+
+        console.log(sendIdOfFilmForUsers, clickedTitle,'title')
         $('#newProjSynopsis').val(clickedSyn);
         $('#deleteProj').show();
         // div wo alle user deren filmid dessen entspricht
         $('.choosenmembers').html('');
 
         //all users mit der filmId (bei editproj onclick bestimmt)
-        let choosenmembers = []; //alle die bei save mitgeschickt werden
 
-        $.ajax({
+        $.ajax({ //hole alle members des projekts
             url:'/regie/memberofproj',
-            method:'get', //post filmid res = alle user, die filmid beinhalten
+            method:'post', //post filmid res = alle user, die filmid beinhalten
             data:JSON.stringify(sendIdOfFilmForUsers),//BACKEND --> hole alle user mt der filmid 
             contentType:'application/json',
-            success:function(data){
-                console.log(data, 'members of project')
-                //wenn membersofproj (rücksendunng )nicht emty, //[{username:name, userid:id},{username:name, userid:id}]
+            success:function(res){//[{username:name, userid:id},{username:name, userid:id}]
 
-                if(data >= 0){
-                    //alle diese user in choosenmembers
-                    data.foreach(function(vorhandene){           
-                         choosenmembers.push(vorhandene)  //einzelner user {name, id}
+                if(res.length > 0){ // wenn projekte 
+                    res.forEach(function(vorhandene){    
+                        console.log(vorhandene,'more users of project mitgeschickt')
+                        let name = vorhandene.vorname;
+                        let id =  vorhandene.id;
+                        appendmemberinDiv(name, id)
                     })
+                } else if(res.length = 0){
+                        // choosenmembers.push(res)
+                        console.log(1,'projekt hat 1nen user')
+                        let name = res.vorname;
+                        let id = res.id;
+                        appendmemberinDiv(name, id)
+                } else {
+                    console.log('keine user mitgeschickt')
                 }
+
             }, //ende success
             error:function(){
-                console.log('get memberoid of proj XHR')
+                console.log('get memberid of proj XHR')
             }
         })//end ajax 
-
-        if(choosenmembers >= 0){
-            let name = choosenmembers.name;
-            let id = choosenmembers.id;
-            //alle aus choosenmembers noch vorm savebutton ins div!!
-            appendmemberinDiv(name, id)
-        }
-
         function appendmemberinDiv(name, id){
             $('<div>')
                 .html(name)
@@ -113,16 +191,13 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                     //der in JSON dafür verantwortlich ist, dass diese user mit der ID die filminstanz bekommen
                 });
         } 
-
        
-
         // modal beefüllen mit filmdaten
         function Memberselect(){ 
             $.ajax({ // projekt daten in den user unter projekte speichern
                     url: 'regie/crewmemberlist',
                     method: 'get',
                     success:function(data){
-                        
                         //let allTeammembers =  {"crewMembers":[{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.33682613078290247","status":false},{"vorname":"dd","nachname":"isa","email":"email@lisa","password":"12345","number":"12345","id":"0.5783424493750503","status":false}]};
                         let html = `
                                     <select class="custom-select" id="memberselect">
@@ -139,7 +214,7 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                             $('<option>').val(einzelner.id).html(vname).appendTo('#memberselect')
                             //console.log(einzelner.vorname)
                         });
-                        console.log(data)
+                        //console.log(data, 'all crewmembers)
 
 
                         // button neben user select (append user to div)
@@ -178,8 +253,8 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                     }
             });//end ajax
         }// end Memberselect
-        Memberselect(choosenmembers)
-        SaveChanges(choosenmembers)
+        Memberselect()
+        SaveChanges()
 
 
         // savebutton im modal der ProjectSettings() aus onclick auf einzelnen flm
@@ -187,17 +262,18 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
             $('#saveNewProject').on('click', function(e){
                 e.preventDefault();
                 $('#newProjModal').modal('hide');
-                choosenmembers = []//leereen
+                let choosenmembers = [];
+
                 function updateChoosenmembers(){ // zu usern projektid fügen
                     // nur wenn im .coosenmembersdiv was drinnen ist -> update dessen user & sowiso proj
                     let members = $('.choosenmembers').children().length >= 0;
                     console.log(members,'members true/false?')//true wenn 1ner hinzugefügt
 
-                    if(members){ //wenn berreits user d proj vorhanden
+                    if(members){ //wenn divs da
                         console.log('befüllt')
-                        // 1. hole alle divs aus choosen member,
-                            $('.choosenmembers div').each((j, divcnames) => { //each braucht 2 parameter!!
-                                choosenmembers.push($(divcnames).attr('data-id'));    
+                        // 1. hole alle  divs(members) aus html,
+                            $('.choosenmembers div').each((j, divnames) => { //each braucht 2 parameter!!
+                                choosenmembers.push($(divnames).attr('data-id'));    
                             }); 
                         console.log( choosenmembers, 'choosenmembers nach push of divnames') // wo ist undefined her??
 
@@ -218,6 +294,8 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                                 // dataType: 'json', 
                                 success:function(res){
                                     console.log('post addusertoproject works', res)
+                                    //top.location.href = '/regie';
+
                                 // UpdateProjectsInUser()  im success der
                                 },
                                 error:function(){
@@ -240,7 +318,7 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                         newsyn: $('#newProjSynopsis').val(),
                         //titelBild:$('.titelBild').val(),
                     };
-                    updateProjId = projectsId.filmid;   //projectsId sollte nur projects heißen filmId ist   
+                    let updateProjId = projectsId.filmid;   //projectsId sollte nur projects heißen filmId ist   
                     console.log(updateProjId,'updateProjId')
                     $.ajax({
                         url:'/regie/projects/' + updateProjId, //2projids?
@@ -249,12 +327,8 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                         contentType: 'application/json',
                         success:function(res){
                             console.log('film was updated') 
-                            // var windoeandTab = widow.open('http://localhost:5555/regie', 'pills-project') ;
-                            // windoeandTab.location.reload(true);
-                            // location.reload();
-                            // window.location.reload(true)
-                            //Location.reload(forcedReload: true);
-                            //location.load(true) 
+                            //top.location.href = '/regie';
+
                             console.log(res) //updated projectid
                         },
                         error:function(){
@@ -262,14 +336,14 @@ function ProjectSettings(){ //Memberselect() &  updateProj(); //ID!!!!
                         }
                     })//ende ajax
                 }//ende projupdate
-                Projectupdate();
-
+                Projectupdate(projectsId);
             })//end onclick
         }//end updateProj
         //SaveChanges(projectsId, choosenmembers);
         DeleteProject(clickedElement)//wenn on click
     })// ende projectsettings
-}//ende changeproj
+}//ende changeproj                    
+
 
 //Delete Proj
 function DeleteProject(clickedElement){
@@ -306,26 +380,10 @@ function DeleteProject(clickedElement){
             }
         })//ende Ajax
     })//end click
-}
+} // in Projectsettings aufgerufen
 
-function getProjects(){// success: makeFilmcards() & ProjectSettings()
-    $.ajax({ 
-        url:'regie/projects',
-        method:'get',
-        success:function(data){
-            //1card/film
-            data = JSON.parse(data)
-            makeFilmcards(data)
-            ProjectSettings()
-        
-        },//end success
-        error:function(){
-            console.log('XHR error get filmlist')
-        }
-    })//ende fill filmcards
-}
-getProjects() 
-    
+
+
 function NewProject(){
     $('#createNewProj').on('click', function(e){
         $('#newProjModal').modal('show');
@@ -367,5 +425,4 @@ function NewProject(){
             })//end ajax
         })//ende save proj onclick
     })//ende createnewproj onclick
-}
-NewProject()
+} NewProject()

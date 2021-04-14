@@ -22,21 +22,10 @@ Array.prototype.slice.call(forms).forEach(function (form) {
 /*
 REGISTRIERUNG
 **/   
-        // const registrierung = (allTeammembers, newTeamMember) => {
-        //     console.log('user wurde hinzugefügt')
-        //     // if(res.status == 200){
-        //     $( '#username').html(`Hello ${$('.cmVName').val()}  <br>please Login here <br>`);
-        //     console.log((allTeammembers.crewMembers[0]), 'weiter in den loginberreich');
-            
-        //     console.log(newTeamMember, 'new teammember');
-        // };
 
 
         $('#registerbtn').on('click', function(e){
             e.preventDefault();
-//             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-//                  Launch demo modal
-//              </button>
            
             console.log('registerclick');
             
@@ -61,14 +50,14 @@ REGISTRIERUNG
                     //registrierung(req, allTeammembers, newTeamMember)
                     console.log(res, 'reponse')
                     $('.cmVName').val(' '), 
-                        $('.cmNName').val(' '), 
+                    $('.cmNName').val(' '), 
                     $('.cmMail').val(' '),
-                        $('.cmPassword').val(' '),
+                    $('.cmPassword').val(' '),
                     $('.cmNumber').val(' '),
-                        $('#registerbtn').prop('disabled', false)
+                    $('#registerbtn').prop('disabled', false)
                         .css({"background-color":"green"})
-                        $(' .row').html('<div>').addClass('meldung').html('erfolgreich registriert')
-                        $('<a>').addClass('btn btn-primary loginbtn').attr({'href':'login.html'}).html('login').appendTo('.meldung')
+                    $(' .row').html('<div>').addClass('meldung').html('erfolgreich registriert')
+                    $('<a>').addClass('btn btn-primary loginbtn').attr({'href':'login.html'}).html('login').appendTo('.meldung')
                         
                     
                     //ZU USERINTERFACE!! im /regie $(crewmembers..tbody each bekommt td und daneben button)
